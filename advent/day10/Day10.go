@@ -91,8 +91,6 @@ func (m *Map) FurthestPlace(startingRow int, startingColumn int, dir0 Direction,
 		row0, col0, dir0, err0 = m.Go(row0, col0, dir0)
 		row1, col1, dir1, err1 = m.Go(row1, col1, dir1)
 		distance++
-		//m.Mark(row0, col0, distance)
-		//m.Mark(row1, col1, distance)
 	}
 	if err0 != nil || err1 != nil {
 		return 0, 0, 0, errors.New(fmt.Sprintf("Error: %v, %v", err0, err1))

@@ -2,6 +2,7 @@ package day10
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -104,5 +105,28 @@ func TestMap_Go(t *testing.T) {
 				t.Errorf("Eexpected to enter %d,%d from %v, but got to %d,%d from %v", test.expectedNewRow, test.expectedNewColumn, test.expectedNextDirection, newRow, newCol, newDir)
 			}
 		})
+	}
+}
+
+func TestAcceptancePart1(t *testing.T) {
+	b, err := os.ReadFile("day10.txt") // just pass the file name
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	m := NewMap(string(b))
+
+	actual := m.At(57, 65)
+	expected := "S"
+	if actual != expected {
+		t.Errorf("Expected %v, got %v", expected, actual)
+	}
+
+	_, _, distance, err := m.FurthestPlace(57, 65, S, N)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	expectedDistance := 6951
+	if distance != expectedDistance {
+		t.Errorf("Expected distance %d, got %d", expectedDistance, distance)
 	}
 }
