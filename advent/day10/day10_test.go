@@ -11,6 +11,12 @@ const simpleSample = `.....
 .L-J.
 .....`
 
+const lessSimpleSample = `7-F7-
+.FJ|7
+SJLL7
+|F--J
+LJ.LJ`
+
 func TestMapAt(t *testing.T) {
 	m := NewMap(simpleSample)
 	actual := m.At(3, 1)
@@ -20,13 +26,41 @@ func TestMapAt(t *testing.T) {
 	}
 }
 
+func TestMapMark(t *testing.T) {
+	m := NewMap(simpleSample)
+
+	m.Mark(3, 1, 8)
+
+	actual := m.At(3, 1)
+	expected := "8"
+	if actual != expected {
+		t.Errorf("Expected %v, got %v", expected, actual)
+	}
+}
+
 func TestFurthestPlaceSimpleSample(t *testing.T) {
 	m := NewMap(simpleSample)
+
 	row, col, distance, err := m.FurthestPlace(1, 1, S, E)
+
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 	expectedRow, expectedCol, expectedDistance := 3, 3, 4
+	if row != expectedRow || col != expectedCol || distance != expectedDistance {
+		t.Errorf("Expected %d,%d at distance %d, got %d,%d at distance %d", expectedRow, expectedCol, expectedDistance, row, col, distance)
+	}
+}
+
+func TestFurthestPlaceLessSimpleSample(t *testing.T) {
+	m := NewMap(lessSimpleSample)
+
+	row, col, distance, err := m.FurthestPlace(2, 0, S, E)
+
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	expectedRow, expectedCol, expectedDistance := 2, 4, 8
 	if row != expectedRow || col != expectedCol || distance != expectedDistance {
 		t.Errorf("Expected %d,%d at distance %d, got %d,%d at distance %d", expectedRow, expectedCol, expectedDistance, row, col, distance)
 	}
