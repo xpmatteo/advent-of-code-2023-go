@@ -75,6 +75,21 @@ func (m *Map) At(row int, column int) string {
 	return m.rows[row][column : column+1]
 }
 
+func (m *Map) FurthestPlace(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) (int, int, int, error) {
+	distance := 1
+	row0, col0, dir0, err0 := m.Go(startingRow, startingColumn, dir0)
+	row1, col1, dir1, err1 := m.Go(startingRow, startingColumn, dir1)
+	for err0 == nil && err1 == nil && row0 != row1 && col0 != col1 {
+		row0, col0, dir0, err0 = m.Go(row0, col0, dir0)
+		row1, col1, dir1, err1 = m.Go(row1, col1, dir1)
+		distance++
+	}
+	if err0 != nil || err1 != nil {
+		return 0, 0, 0, errors.New(fmt.Sprintf("Error: %v, %v", err0, err1))
+	}
+	return row0, col0, distance, nil
+}
+
 func NewMap(input string) *Map {
 	m := &Map{}
 	m.Load(input)

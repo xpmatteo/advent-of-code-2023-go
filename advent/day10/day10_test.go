@@ -20,6 +20,18 @@ func TestMapAt(t *testing.T) {
 	}
 }
 
+func TestFurthestPlaceSimpleSample(t *testing.T) {
+	m := NewMap(simpleSample)
+	row, col, distance, err := m.FurthestPlace(1, 1, S, E)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	expectedRow, expectedCol, expectedDistance := 3, 3, 4
+	if row != expectedRow || col != expectedCol || distance != expectedDistance {
+		t.Errorf("Expected %d,%d at distance %d, got %d,%d at distance %d", expectedRow, expectedCol, expectedDistance, row, col, distance)
+	}
+}
+
 func TestMap_Go(t *testing.T) {
 	tests := []struct {
 		startingRow           int
