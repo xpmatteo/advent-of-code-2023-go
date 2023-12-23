@@ -1,6 +1,10 @@
 package day10
 
-import "strings"
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
 
 type Direction struct {
 	direct string
@@ -22,8 +26,23 @@ func (m *Map) Load(input string) {
 	m.rows = strings.Split(input, "\n")
 }
 
-func (m *Map) Go(row int, col int, dir Direction) (int, int, Direction) {
-	return 1, 2, E
+func (m *Map) Go(row int, col int, dir Direction) (int, int, Direction, error) {
+	type Cases struct {
+		enteringDirection Direction
+		symbol            string
+	}
+	symbol := m.At(row, col)
+	fmt.Printf("At %d,%d, symbol is %v\n", row, col, symbol)
+	x := Cases{dir, symbol}
+	switch x {
+	case Cases{W, "-"}:
+		return row, col + 1, W, nil
+	case Cases{W, "7"}:
+		return row + 1, col, N, nil
+	case Cases{N, "|"}:
+		return row + 1, col, N, nil
+	}
+	return row, col, dir, errors.New("not implemented")
 }
 
 func (m *Map) At(row int, column int) string {
