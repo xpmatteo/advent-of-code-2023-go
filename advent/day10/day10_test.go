@@ -22,26 +22,30 @@ func TestMapAt(t *testing.T) {
 
 func TestMap_Go(t *testing.T) {
 	tests := []struct {
-		fromDirection     Direction
-		enteringRow       int
-		enteringCol       int
-		expectedDirection Direction
-		expectedRow       int
-		expectedCol       int
+		startingRow           int
+		startingColumn        int
+		startingDirection     Direction
+		expectedNewRow        int
+		expectedNewColumn     int
+		expectedNextDirection Direction
 	}{
-		{W, 1, 2, W, 1, 3},
-		{W, 1, 3, N, 2, 3},
-		{N, 2, 3, N, 3, 3},
+		{1, 1, E, 1, 2, E},
+		{1, 2, E, 1, 3, S},
+		{1, 3, S, 2, 3, S},
+		{2, 3, S, 3, 3, W},
+		{3, 3, W, 3, 2, W},
+		{3, 2, W, 3, 1, N},
+		{3, 1, N, 2, 1, N},
 	}
 	for _, test := range tests {
-		name := fmt.Sprintf("After entering %d,%d from %v", test.enteringRow, test.enteringCol, test.fromDirection)
+		name := fmt.Sprintf("After entering %d,%d from %v", test.startingRow, test.startingColumn, test.startingDirection)
 		t.Run(name, func(t *testing.T) {
 			aMap := NewMap(simpleSample)
-			newRow, newCol, newDir, err := aMap.Go(test.enteringRow, test.enteringCol, test.fromDirection)
+			newRow, newCol, newDir, err := aMap.Go(test.startingRow, test.startingColumn, test.startingDirection)
 			if err != nil {
 				t.Errorf("Unexpected error: %v", err)
-			} else if newRow != test.expectedRow || newCol != test.expectedCol || newDir != test.expectedDirection {
-				t.Errorf("Eexpected to enter %d,%d from %v, but got to %d,%d from %v", test.expectedRow, test.expectedCol, test.expectedDirection, newRow, newCol, newDir)
+			} else if newRow != test.expectedNewRow || newCol != test.expectedNewColumn || newDir != test.expectedNextDirection {
+				t.Errorf("Eexpected to enter %d,%d from %v, but got to %d,%d from %v", test.expectedNewRow, test.expectedNewColumn, test.expectedNextDirection, newRow, newCol, newDir)
 			}
 		})
 	}

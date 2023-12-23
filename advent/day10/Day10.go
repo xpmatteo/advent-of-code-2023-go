@@ -31,16 +31,37 @@ func (m *Map) Go(row int, col int, dir Direction) (int, int, Direction, error) {
 		enteringDirection Direction
 		symbol            string
 	}
+	switch dir {
+	case E:
+		col++
+	case S:
+		row++
+	case W:
+		col--
+	case N:
+		row--
+	default:
+		return row, col, dir, errors.New(fmt.Sprintf("Unknown direction %v", dir))
+	}
+
 	symbol := m.At(row, col)
-	fmt.Printf("At %d,%d, symbol is %v\n", row, col, symbol)
+	fmt.Printf("Entering %d,%d from %v, symbol is %v\n", row, col, dir, symbol)
 	x := Cases{dir, symbol}
 	switch x {
-	case Cases{W, "-"}:
-		return row, col + 1, W, nil
-	case Cases{W, "7"}:
-		return row + 1, col, N, nil
+	case Cases{E, "-"}:
+		return row, col, E, nil
+	case Cases{E, "7"}:
+		return row, col, S, nil
+	case Cases{S, "|"}:
+		return row, col, S, nil
 	case Cases{N, "|"}:
-		return row + 1, col, N, nil
+		return row, col, N, nil
+	case Cases{S, "J"}:
+		return row, col, W, nil
+	case Cases{W, "-"}:
+		return row, col, W, nil
+	case Cases{W, "L"}:
+		return row, col, N, nil
 	}
 	return row, col, dir, errors.New("not implemented")
 }
