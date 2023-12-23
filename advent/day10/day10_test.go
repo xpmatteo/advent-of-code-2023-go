@@ -29,6 +29,7 @@ func TestMap_Go(t *testing.T) {
 		expectedNewColumn     int
 		expectedNextDirection Direction
 	}{
+		// loop right
 		{1, 1, E, 1, 2, E},
 		{1, 2, E, 1, 3, S},
 		{1, 3, S, 2, 3, S},
@@ -36,6 +37,15 @@ func TestMap_Go(t *testing.T) {
 		{3, 3, W, 3, 2, W},
 		{3, 2, W, 3, 1, N},
 		{3, 1, N, 2, 1, N},
+
+		// loop south
+		{1, 1, S, 2, 1, S},
+		{2, 1, S, 3, 1, E},
+		{3, 1, E, 3, 2, E},
+		{3, 2, E, 3, 3, N},
+		{3, 3, N, 2, 3, N},
+		{2, 3, N, 1, 3, W},
+		{1, 3, W, 1, 2, W},
 	}
 	for _, test := range tests {
 		name := fmt.Sprintf("After entering %d,%d from %v", test.startingRow, test.startingColumn, test.startingDirection)

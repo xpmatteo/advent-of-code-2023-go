@@ -45,25 +45,30 @@ func (m *Map) Go(row int, col int, dir Direction) (int, int, Direction, error) {
 	}
 
 	symbol := m.At(row, col)
-	fmt.Printf("Entering %d,%d from %v, symbol is %v\n", row, col, dir, symbol)
 	x := Cases{dir, symbol}
 	switch x {
 	case Cases{E, "-"}:
 		return row, col, E, nil
+	case Cases{W, "-"}:
+		return row, col, W, nil
 	case Cases{E, "7"}:
 		return row, col, S, nil
+	case Cases{N, "7"}:
+		return row, col, W, nil
 	case Cases{S, "|"}:
 		return row, col, S, nil
 	case Cases{N, "|"}:
 		return row, col, N, nil
 	case Cases{S, "J"}:
 		return row, col, W, nil
-	case Cases{W, "-"}:
-		return row, col, W, nil
+	case Cases{E, "J"}:
+		return row, col, N, nil
 	case Cases{W, "L"}:
 		return row, col, N, nil
+	case Cases{S, "L"}:
+		return row, col, E, nil
 	}
-	return row, col, dir, errors.New("not implemented")
+	return row, col, dir, errors.New(fmt.Sprintf("Unknown symbol/direction %v/%v", symbol, dir))
 }
 
 func (m *Map) At(row int, column int) string {
