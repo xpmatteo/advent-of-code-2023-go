@@ -39,10 +39,11 @@ func TestFurthestPlaceSimpleSample(t *testing.T) {
 
 	row, col, distance, err := m.FurthestPlace(1, 1, S, E)
 
-	assert.NoError(err)
-	assert.Equal(3, row)
-	assert.Equal(3, col)
-	assert.Equal(4, distance)
+	if assert.NoError(err) {
+		assert.Equal(3, row)
+		assert.Equal(3, col)
+		assert.Equal(4, distance)
+	}
 }
 
 func TestFurthestPlaceLessSimpleSample(t *testing.T) {
@@ -51,10 +52,11 @@ func TestFurthestPlaceLessSimpleSample(t *testing.T) {
 
 	row, col, distance, err := m.FurthestPlace(2, 0, S, E)
 
-	assert.NoError(err)
-	assert.Equal(2, row)
-	assert.Equal(4, col)
-	assert.Equal(8, distance)
+	if assert.NoError(err) {
+		assert.Equal(2, row)
+		assert.Equal(4, col)
+		assert.Equal(8, distance)
+	}
 }
 
 func TestMap_Go(t *testing.T) {
@@ -92,10 +94,11 @@ func TestMap_Go(t *testing.T) {
 
 			newRow, newCol, newDir, err := aMap.Go(test.startingRow, test.startingColumn, test.startingDirection)
 
-			assert.NoError(err)
-			assert.Equal(test.expectedNewRow, newRow)
-			assert.Equal(test.expectedNewColumn, newCol)
-			assert.Equal(test.expectedNextDirection, newDir)
+			if assert.NoError(err) {
+				assert.Equal(test.expectedNewRow, newRow)
+				assert.Equal(test.expectedNewColumn, newCol)
+				assert.Equal(test.expectedNextDirection, newDir)
+			}
 		})
 	}
 }
@@ -103,12 +106,15 @@ func TestMap_Go(t *testing.T) {
 func TestAcceptancePart1(t *testing.T) {
 	assert := assert.New(t)
 	b, err := os.ReadFile("day10.txt") // just pass the file name
-	assert.NoError(err)
+	if !assert.NoError(err) {
+		return
+	}
 	m := NewMap(string(b))
 
 	assert.Equal("S", m.At(57, 65))
 
 	_, _, distance, err := m.FurthestPlace(57, 65, S, N)
-	assert.NoError(err)
-	assert.Equal(6951, distance)
+	if assert.NoError(err) {
+		assert.Equal(6951, distance)
+	}
 }
