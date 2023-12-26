@@ -141,18 +141,22 @@ func (m *Map) areaOfRow(row int) int {
 	return area
 }
 
-const (
-	outside     = "outside"
-	inside      = "inside"
-	metFoutside = "metFoutside"
-	metLoutside = "metLoutside"
-	metFinside  = "metFinside"
+type state struct {
+	currentState string
+}
+
+var (
+	outside     = state{"outside"}
+	inside      = state{"inside"}
+	metFoutside = state{"metFoutside"}
+	metLoutside = state{"metLoutside"}
+	metFinside  = state{"metFinside"}
 )
 
 var stateTransitions = []struct {
-	currentState string
+	currentState state
 	currentChar  string
-	nextState    string
+	nextState    state
 }{
 	{outside, ".", outside},
 	{outside, "|", inside},
@@ -166,7 +170,7 @@ var stateTransitions = []struct {
 	{metLoutside, "J", outside},
 }
 
-func updateState(currentState string, currentChar string) string {
+func updateState(currentState state, currentChar string) state {
 	for _, transition := range stateTransitions {
 		if transition.currentState == currentState && transition.currentChar == currentChar {
 			return transition.nextState
