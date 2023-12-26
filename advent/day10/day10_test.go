@@ -132,3 +132,15 @@ func TestMapCleanUp(t *testing.T) {
 
 	assert.Equal(string(simpleSampleClean), actual.String())
 }
+
+func TestAcceptancePart2(t *testing.T) {
+	assert := assert.New(t)
+	b, err := os.ReadFile("day10.txt") // just pass the file name
+	require.NoError(t, err)
+	m := NewMap(string(b)).CleanUp(57, 65, S, N)
+
+	area, err := m.Area(57, 65, S, N)
+	if assert.NoError(err) {
+		assert.Equal(1, area)
+	}
+}

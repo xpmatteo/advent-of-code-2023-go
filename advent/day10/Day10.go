@@ -114,6 +114,10 @@ func (m *Map) CleanUp(startingRow int, startingColumn int, dir0 Direction, dir1 
 	return result
 }
 
+func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) (int, error) {
+	return 100, nil
+}
+
 func copyLoop(result *Map, m *Map, startingRow int, startingColumn int, dir0 Direction, dir1 Direction) {
 	row0, col0, dir0, err0 := m.Go(startingRow, startingColumn, dir0)
 	row1, col1, dir1, err1 := m.Go(startingRow, startingColumn, dir1)
