@@ -139,18 +139,50 @@ func xTestAcceptancePart2(t *testing.T) {
 	require.NoError(t, err)
 	m := NewMap(string(b)).CleanUp(57, 65, S, N)
 
-	area, err := m.Area(57, 65, S, N)
-	if assert.NoError(err) {
-		assert.Equal(1, area)
-	}
+	area := m.Area(57, 65, S, N)
+	assert.Equal(1, area)
 }
 
-func TestPart2_SimpleSample(t *testing.T) {
-	assert := assert.New(t)
-	m := NewMap(string(simpleSample))
+const elbowDown = `.......
+.S---7.
+.|...|.
+.L7.FJ.
+..L-J..`
 
-	area, err := m.Area(1, 1, S, E)
-	if assert.NoError(err) {
-		assert.Equal(1, area)
+const harderAreaSample = `.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...`
+
+func TestMap_AreaCases(t *testing.T) {
+	tests := []struct {
+		name           string
+		data           string
+		startingRow    int
+		startingColumn int
+		dir0           Direction
+		dir1           Direction
+		expectedArea   int
+	}{
+		{"simple", simpleSample, 1, 1, S, E, 1},
+		{"elbowDown", elbowDown, 1, 1, S, E, 4},
+		//		{"harder", harderAreaSample, 4, 12, S, E, 8},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			assert := assert.New(t)
+			m := NewMap(string(test.data))
+			require.Equal(t, "S", m.At(test.startingRow, test.startingColumn), "starting point is wrong")
+
+			area := m.Area(1, 1, S, E)
+			cleaned := m.CleanUp(test.startingRow, test.startingColumn, test.dir0, test.dir1).String()
+			assert.Equal(test.expectedArea, area, cleaned)
+		})
 	}
 }

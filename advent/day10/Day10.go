@@ -118,8 +118,13 @@ func (m *Map) CleanUp(startingRow int, startingColumn int, dir0 Direction, dir1 
 	return result
 }
 
-func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) (int, error) {
-	return m.CleanUp(startingRow, startingColumn, dir0, dir1).areaOfRow(2), nil
+func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) int {
+	cleanMap := m.CleanUp(startingRow, startingColumn, dir0, dir1)
+	area := 0
+	for row := 0; row < len(cleanMap.rows); row++ {
+		area += cleanMap.areaOfRow(row)
+	}
+	return area
 }
 
 const (
