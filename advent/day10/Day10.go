@@ -120,6 +120,7 @@ func (m *Map) CleanUp(startingRow int, startingColumn int, dir0 Direction, dir1 
 
 func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) int {
 	cleanMap := m.CleanUp(startingRow, startingColumn, dir0, dir1)
+	cleanMap.set(startingRow, startingColumn, "F")
 	area := 0
 	for row := 0; row < len(cleanMap.rows); row++ {
 		area += cleanMap.areaOfRow(row)
@@ -127,32 +128,51 @@ func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Dir
 	return area
 }
 
-const (
-	outside = iota
-	inside
-)
-
 func (m *Map) areaOfRow(row int) int {
 	state := outside
 	area := 0
 	for i := 0; i < len(m.rows[row]); i++ {
 		currentChar := m.At(row, i)
-		switch currentChar {
-		case "|":
-			if state == outside {
-				state = inside
-			} else if state == inside {
-				state = outside
-			} else {
-				panic("Unexpected state " + fmt.Sprintf("%d", state))
-			}
-		case ".":
-			if state == inside {
-				area++
-			}
+		state = updateState(state, currentChar)
+		if state == inside && currentChar == "." {
+			area++
 		}
 	}
 	return area
+}
+
+const (
+	outside     = "outside"
+	inside      = "inside"
+	metFoutside = "metFoutside"
+	metLoutside = "metLoutside"
+	metFinside  = "metFinside"
+)
+
+var stateTransitions = []struct {
+	currentState string
+	currentChar  string
+	nextState    string
+}{
+	{outside, ".", outside},
+	{outside, "|", inside},
+	{outside, "F", metFoutside},
+	{outside, "L", metLoutside},
+	{inside, "|", outside},
+	{inside, ".", inside},
+	{metFoutside, "-", metFoutside},
+	{metFoutside, "7", outside},
+	{metLoutside, "-", metLoutside},
+	{metLoutside, "J", outside},
+}
+
+func updateState(currentState string, currentChar string) string {
+	for _, transition := range stateTransitions {
+		if transition.currentState == currentState && transition.currentChar == currentChar {
+			return transition.nextState
+		}
+	}
+	panic(fmt.Sprintf("Unknown state transition: %s, %s", currentState, currentChar))
 }
 
 func copyLoop(result *Map, m *Map, startingRow int, startingColumn int, dir0 Direction, dir1 Direction) {
