@@ -102,7 +102,7 @@ func (m *Map) Mark(row int, column int, mark int) {
 	m.rows[row] = m.rows[row][:column] + fmt.Sprintf("%d", mark) + m.rows[row][column+1:]
 }
 
-func (m *Map) CleanUp() *Map {
+func (m *Map) CleanUp(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) *Map {
 	result := NewMap(m.String())
 	for row := 0; row < len(m.rows); row++ {
 		runes := "-|JFL7"
@@ -110,7 +110,21 @@ func (m *Map) CleanUp() *Map {
 			result.rows[row] = strings.ReplaceAll(result.rows[row], runes[i:i+1], ".")
 		}
 	}
+	copyLoop(result, m, startingRow, startingColumn, dir0, dir1)
 	return result
+}
+
+func copyLoop(result *Map, m *Map, startingRow int, startingColumn int, dir0 Direction, dir1 Direction) {
+	row0, col0, dir0, err0 := m.Go(startingRow, startingColumn, dir0)
+	row1, col1, dir1, err1 := m.Go(startingRow, startingColumn, dir1)
+	result.rows[row0] = result.rows[row0][:col0] + m.rows[row0][col0:col0+1] + result.rows[row0][col0+1:]
+	result.rows[row1] = result.rows[row1][:col1] + m.rows[row1][col1:col1+1] + result.rows[row1][col1+1:]
+	for err0 == nil && err1 == nil && (row0 != row1 || col0 != col1) {
+		row0, col0, dir0, err0 = m.Go(row0, col0, dir0)
+		row1, col1, dir1, err1 = m.Go(row1, col1, dir1)
+		result.rows[row0] = result.rows[row0][:col0] + m.rows[row0][col0:col0+1] + result.rows[row0][col0+1:]
+		result.rows[row1] = result.rows[row1][:col1] + m.rows[row1][col1:col1+1] + result.rows[row1][col1+1:]
+	}
 }
 
 func NewMap(input string) *Map {

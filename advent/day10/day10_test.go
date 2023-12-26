@@ -128,7 +128,7 @@ func TestMapCleanUp(t *testing.T) {
 	assert := assert.New(t)
 	m := NewMap(simpleSample)
 
-	actual := m.CleanUp()
+	actual := m.CleanUp(1, 1, S, E)
 
 	assert.Equal(string(simpleSampleClean), actual.String())
 }
