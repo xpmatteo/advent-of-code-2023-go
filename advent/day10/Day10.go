@@ -102,6 +102,17 @@ func (m *Map) Mark(row int, column int, mark int) {
 	m.rows[row] = m.rows[row][:column] + fmt.Sprintf("%d", mark) + m.rows[row][column+1:]
 }
 
+func (m *Map) CleanUp() *Map {
+	result := NewMap(m.String())
+	for row := 0; row < len(m.rows); row++ {
+		runes := "-|JFL7"
+		for i := 0; i < len(runes); i++ {
+			result.rows[row] = strings.ReplaceAll(result.rows[row], runes[i:i+1], ".")
+		}
+	}
+	return result
+}
+
 func NewMap(input string) *Map {
 	m := &Map{}
 	m.Load(input)

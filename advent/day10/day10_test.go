@@ -9,6 +9,12 @@ import (
 )
 
 const simpleSample = `.....
+.S-7|
+||||L
+.L-JJ
+.....`
+
+const simpleSampleClean = `.....
 .S-7.
 .|.|.
 .L-J.
@@ -116,4 +122,13 @@ func TestAcceptancePart1(t *testing.T) {
 	if assert.NoError(err) {
 		assert.Equal(6951, distance)
 	}
+}
+
+func TestMapCleanUp(t *testing.T) {
+	assert := assert.New(t)
+	m := NewMap(simpleSample)
+
+	actual := m.CleanUp()
+
+	assert.Equal(string(simpleSampleClean), actual.String())
 }
