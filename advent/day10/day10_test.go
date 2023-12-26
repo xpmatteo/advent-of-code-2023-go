@@ -143,11 +143,16 @@ func xTestAcceptancePart2(t *testing.T) {
 	assert.Equal(1, area)
 }
 
-const elbowDown = `.......
-.S---7.
-.|...|.
-.L7.FJ.
-..L-J..`
+const convexElbowDown = `.......
+.S-----7.
+.|.....|.
+.L-7.F-J.
+...L-J..`
+
+const concaveElbowDown = `.......
+.S-----7.
+.|.F-7.|.
+.L-J.L-J`
 
 const harderAreaSample = `.F----7F7F7F7F-7....
 .|F--7||||||||FJ....
@@ -171,7 +176,8 @@ func TestMap_AreaCases(t *testing.T) {
 		expectedArea   int
 	}{
 		{"simple", simpleSample, 1, 1, S, E, 1},
-		{"elbowDown", elbowDown, 1, 1, S, E, 4},
+		{"convexElbowDown", convexElbowDown, 1, 1, S, E, 6},
+		{"concaveElbowDown", concaveElbowDown, 1, 1, S, E, 2},
 		//		{"harder", harderAreaSample, 4, 12, S, E, 8},
 	}
 	for _, test := range tests {
