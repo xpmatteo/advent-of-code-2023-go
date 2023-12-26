@@ -98,8 +98,12 @@ func (m *Map) FurthestPlace(startingRow int, startingColumn int, dir0 Direction,
 	return row0, col0, distance, nil
 }
 
+func (m *Map) set(row int, column int, s string) {
+	m.rows[row] = m.rows[row][:column] + s + m.rows[row][column+1:]
+}
+
 func (m *Map) Mark(row int, column int, mark int) {
-	m.rows[row] = m.rows[row][:column] + fmt.Sprintf("%d", mark) + m.rows[row][column+1:]
+	m.set(row, column, fmt.Sprintf("%d", mark))
 }
 
 func (m *Map) CleanUp(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) *Map {
@@ -121,13 +125,13 @@ func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Dir
 func copyLoop(result *Map, m *Map, startingRow int, startingColumn int, dir0 Direction, dir1 Direction) {
 	row0, col0, dir0, err0 := m.Go(startingRow, startingColumn, dir0)
 	row1, col1, dir1, err1 := m.Go(startingRow, startingColumn, dir1)
-	result.rows[row0] = result.rows[row0][:col0] + m.rows[row0][col0:col0+1] + result.rows[row0][col0+1:]
-	result.rows[row1] = result.rows[row1][:col1] + m.rows[row1][col1:col1+1] + result.rows[row1][col1+1:]
+	result.set(row0, col0, m.At(row0, col0))
+	result.set(row1, col1, m.At(row1, col1))
 	for err0 == nil && err1 == nil && (row0 != row1 || col0 != col1) {
 		row0, col0, dir0, err0 = m.Go(row0, col0, dir0)
 		row1, col1, dir1, err1 = m.Go(row1, col1, dir1)
-		result.rows[row0] = result.rows[row0][:col0] + m.rows[row0][col0:col0+1] + result.rows[row0][col0+1:]
-		result.rows[row1] = result.rows[row1][:col1] + m.rows[row1][col1:col1+1] + result.rows[row1][col1+1:]
+		result.set(row0, col0, m.At(row0, col0))
+		result.set(row1, col1, m.At(row1, col1))
 	}
 }
 
