@@ -119,7 +119,35 @@ func (m *Map) CleanUp(startingRow int, startingColumn int, dir0 Direction, dir1 
 }
 
 func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) (int, error) {
-	return 100, nil
+	return m.CleanUp(startingRow, startingColumn, dir0, dir1).areaOfRow(2), nil
+}
+
+const (
+	outside = iota
+	inside
+)
+
+func (m *Map) areaOfRow(row int) int {
+	state := outside
+	area := 0
+	for i := 0; i < len(m.rows[row]); i++ {
+		currentChar := m.At(row, i)
+		switch currentChar {
+		case "|":
+			if state == outside {
+				state = inside
+			} else if state == inside {
+				state = outside
+			} else {
+				panic("Unexpected state " + fmt.Sprintf("%d", state))
+			}
+		case ".":
+			if state == inside {
+				area++
+			}
+		}
+	}
+	return area
 }
 
 func copyLoop(result *Map, m *Map, startingRow int, startingColumn int, dir0 Direction, dir1 Direction) {

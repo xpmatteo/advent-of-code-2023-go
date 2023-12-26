@@ -145,7 +145,7 @@ func xTestAcceptancePart2(t *testing.T) {
 	}
 }
 
-func xTestPart2_SimpleSample(t *testing.T) {
+func TestPart2_SimpleSample(t *testing.T) {
 	assert := assert.New(t)
 	m := NewMap(string(simpleSample))
 
