@@ -171,7 +171,7 @@ func TestMap_AreaCases(t *testing.T) {
 		expectedArea   int
 	}{
 		{"simple", simpleSample, 1, 1, S, E, 1},
-		//{"elbowDown", elbowDown, 1, 1, S, E, 4},
+		{"elbowDown", elbowDown, 1, 1, S, E, 4},
 		//		{"harder", harderAreaSample, 4, 12, S, E, 8},
 	}
 	for _, test := range tests {

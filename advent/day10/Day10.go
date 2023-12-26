@@ -164,10 +164,13 @@ var stateTransitions = []struct {
 	{outside, "L", metLoutside},
 	{inside, "|", outside},
 	{inside, ".", inside},
+	{inside, "F", metFinside},
 	{metFoutside, "-", metFoutside},
 	{metFoutside, "7", outside},
 	{metLoutside, "-", metLoutside},
 	{metLoutside, "J", outside},
+	{metLoutside, "7", inside},
+	{metFinside, "J", outside},
 }
 
 func updateState(currentState state, currentChar string) state {
