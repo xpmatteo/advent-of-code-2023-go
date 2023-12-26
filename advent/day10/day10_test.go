@@ -3,6 +3,7 @@ package day10
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
 )
@@ -106,9 +107,7 @@ func TestMap_Go(t *testing.T) {
 func TestAcceptancePart1(t *testing.T) {
 	assert := assert.New(t)
 	b, err := os.ReadFile("day10.txt") // just pass the file name
-	if !assert.NoError(err) {
-		return
-	}
+	require.NoError(t, err)
 	m := NewMap(string(b))
 
 	assert.Equal("S", m.At(57, 65))
