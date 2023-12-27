@@ -131,14 +131,15 @@ func TestMapCleanUp(t *testing.T) {
 	assert.Equal(string(simpleSampleClean), actual.String())
 }
 
-func xTestAcceptancePart2(t *testing.T) {
+func TestAcceptancePart2(t *testing.T) {
 	assert := assert.New(t)
 	b, err := os.ReadFile("day10.txt") // just pass the file name
 	require.NoError(t, err)
 	m := NewMap(string(b)).CleanUp(57, 65, S, N)
 
-	area := m.Area(57, 65, "F", S, N)
-	assert.Equal(1, area)
+	area := m.Area(57, 65, "|", S, N)
+
+	assert.Equal(563, area)
 }
 
 const convexElbowDown = `.......
@@ -157,6 +158,11 @@ const convexElbowUp = `.......
 .S-J.L-7.
 .L-----J.`
 
+const concaveElbowUp = `.......
+.S-7.F-7.
+.|.L-J.|.
+.L-----J.`
+
 const harderAreaSample = `.F----7F7F7F7F-7....
 .|F--7||||||||FJ....
 .||.FJ||||||||L7....
@@ -167,6 +173,18 @@ L--J.L7...LJS7F-7L7.
 .....|FJLJ|FJ|F7|.LJ
 ....FJL-7.||.||||...
 ....L---J.LJ.LJLJ...`
+
+const anotherHarderSample = `.....
+FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L`
 
 func TestMap_AreaCases(t *testing.T) {
 	tests := []struct {
@@ -183,16 +201,18 @@ func TestMap_AreaCases(t *testing.T) {
 		{"convexElbowDown", convexElbowDown, 1, 1, "F", S, E, 6},
 		{"concaveElbowDown", concaveElbowDown, 1, 1, "F", S, E, 2},
 		{"convexElbowUp", convexElbowUp, 2, 1, "F", S, E, 1},
-		//		{"harder", harderAreaSample, 4, 12, S, E, 8},
+		{"convexElbowUp", concaveElbowUp, 1, 1, "F", S, E, 2},
+		{"harder", harderAreaSample, 4, 12, "F", S, E, 8},
+		{"harder yet", anotherHarderSample, 1, 4, "7", W, S, 10},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			assert := assert.New(t)
 			m := NewMap(string(test.data))
-
 			require.Equal(t, "S", m.At(test.startingRow, test.startingColumn), "starting point is wrong")
 
-			area := m.Area(test.startingRow, test.startingColumn, test.startingSymbol, S, E)
+			area := m.Area(test.startingRow, test.startingColumn, test.startingSymbol, test.dir0, test.dir1)
+
 			cleaned := m.CleanUp(test.startingRow, test.startingColumn, test.dir0, test.dir1).String()
 			assert.Equal(test.expectedArea, area, cleaned)
 		})

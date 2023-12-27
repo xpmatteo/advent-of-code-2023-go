@@ -176,7 +176,7 @@ var stateTransitions = []struct {
 	{metFinside, "J", outside},
 	{metFinside, "-", metFinside},
 	{metFinside, "7", inside},
-	//{metLinside, "J", outside},
+	{metLinside, "J", inside},
 	{metLinside, "-", metLinside},
 	{metLinside, "7", outside},
 }
