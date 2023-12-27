@@ -26,7 +26,7 @@ func (m *Map) Load(input string) {
 	m.rows = strings.Split(input, "\n")
 }
 
-func (m *Map) Go(row int, col int, dir Direction) (int, int, Direction, error) {
+func (m *Map) Go(row int, col int, dir Direction) (int, int, Direction) {
 	type Cases struct {
 		enteringDirection Direction
 		symbol            string
@@ -41,38 +41,38 @@ func (m *Map) Go(row int, col int, dir Direction) (int, int, Direction, error) {
 	case N:
 		row--
 	default:
-		return row, col, dir, errors.New(fmt.Sprintf("Unknown direction %v", dir))
+		panic(fmt.Sprintf("Unknown direction %v", dir))
 	}
 
 	symbol := m.At(row, col)
 	x := Cases{dir, symbol}
 	switch x {
 	case Cases{E, "-"}:
-		return row, col, E, nil
+		return row, col, E
 	case Cases{W, "-"}:
-		return row, col, W, nil
+		return row, col, W
 	case Cases{E, "7"}:
-		return row, col, S, nil
+		return row, col, S
 	case Cases{N, "7"}:
-		return row, col, W, nil
+		return row, col, W
 	case Cases{W, "F"}:
-		return row, col, S, nil
+		return row, col, S
 	case Cases{N, "F"}:
-		return row, col, E, nil
+		return row, col, E
 	case Cases{S, "|"}:
-		return row, col, S, nil
+		return row, col, S
 	case Cases{N, "|"}:
-		return row, col, N, nil
+		return row, col, N
 	case Cases{S, "J"}:
-		return row, col, W, nil
+		return row, col, W
 	case Cases{E, "J"}:
-		return row, col, N, nil
+		return row, col, N
 	case Cases{W, "L"}:
-		return row, col, N, nil
+		return row, col, N
 	case Cases{S, "L"}:
-		return row, col, E, nil
+		return row, col, E
 	}
-	return row, col, dir, errors.New(fmt.Sprintf("Unknown symbol/direction %v/%v", symbol, dir))
+	panic(fmt.Sprintf("Unknown symbol/direction %v/%v", symbol, dir))
 }
 
 func (m *Map) At(row int, column int) string {
@@ -85,15 +85,12 @@ func (m *Map) String() string {
 
 func (m *Map) FurthestPlace(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) (int, int, int, error) {
 	distance := 1
-	row0, col0, dir0, err0 := m.Go(startingRow, startingColumn, dir0)
-	row1, col1, dir1, err1 := m.Go(startingRow, startingColumn, dir1)
-	for err0 == nil && err1 == nil && (row0 != row1 || col0 != col1) {
-		row0, col0, dir0, err0 = m.Go(row0, col0, dir0)
-		row1, col1, dir1, err1 = m.Go(row1, col1, dir1)
+	row0, col0, dir0 := m.Go(startingRow, startingColumn, dir0)
+	row1, col1, dir1 := m.Go(startingRow, startingColumn, dir1)
+	for row0 != row1 || col0 != col1 {
+		row0, col0, dir0 = m.Go(row0, col0, dir0)
+		row1, col1, dir1 = m.Go(row1, col1, dir1)
 		distance++
-	}
-	if err0 != nil || err1 != nil {
-		return 0, 0, 0, errors.New(fmt.Sprintf("Error: %v, %v", err0, err1))
 	}
 	return row0, col0, distance, nil
 }
@@ -129,11 +126,14 @@ func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Dir
 }
 
 func (m *Map) areaOfRow(row int) int {
-	state := outside
+	state, err := outside, error(nil)
 	area := 0
 	for i := 0; i < len(m.rows[row]); i++ {
 		currentChar := m.At(row, i)
-		state = updateState(state, currentChar)
+		state, err = updateState(state, currentChar)
+		if err != nil {
+			panic(fmt.Sprintf("Error: %v at %d,%d\n%s", err, row, i, m.String()))
+		}
 		if state == inside && currentChar == "." {
 			area++
 		}
@@ -175,23 +175,23 @@ var stateTransitions = []struct {
 	{metFinside, "7", inside},
 }
 
-func updateState(currentState state, currentChar string) state {
+func updateState(currentState state, currentChar string) (state, error) {
 	for _, transition := range stateTransitions {
 		if transition.currentState == currentState && transition.currentChar == currentChar {
-			return transition.nextState
+			return transition.nextState, nil
 		}
 	}
-	panic(fmt.Sprintf("Unknown state transition: %s, %s", currentState, currentChar))
+	return currentState, errors.New(fmt.Sprintf("Unknown state transition: %s, %s", currentState, currentChar))
 }
 
 func copyLoop(result *Map, m *Map, startingRow int, startingColumn int, dir0 Direction, dir1 Direction) {
-	row0, col0, dir0, err0 := m.Go(startingRow, startingColumn, dir0)
-	row1, col1, dir1, err1 := m.Go(startingRow, startingColumn, dir1)
+	row0, col0, dir0 := m.Go(startingRow, startingColumn, dir0)
+	row1, col1, dir1 := m.Go(startingRow, startingColumn, dir1)
 	result.set(row0, col0, m.At(row0, col0))
 	result.set(row1, col1, m.At(row1, col1))
-	for err0 == nil && err1 == nil && (row0 != row1 || col0 != col1) {
-		row0, col0, dir0, err0 = m.Go(row0, col0, dir0)
-		row1, col1, dir1, err1 = m.Go(row1, col1, dir1)
+	for row0 != row1 || col0 != col1 {
+		row0, col0, dir0 = m.Go(row0, col0, dir0)
+		row1, col1, dir1 = m.Go(row1, col1, dir1)
 		result.set(row0, col0, m.At(row0, col0))
 		result.set(row1, col1, m.At(row1, col1))
 	}
