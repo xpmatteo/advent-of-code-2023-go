@@ -137,7 +137,7 @@ func xTestAcceptancePart2(t *testing.T) {
 	require.NoError(t, err)
 	m := NewMap(string(b)).CleanUp(57, 65, S, N)
 
-	area := m.Area(57, 65, S, N)
+	area := m.Area(57, 65, "F", S, N)
 	assert.Equal(1, area)
 }
 
@@ -174,14 +174,15 @@ func TestMap_AreaCases(t *testing.T) {
 		data           string
 		startingRow    int
 		startingColumn int
+		startingSymbol string
 		dir0           Direction
 		dir1           Direction
 		expectedArea   int
 	}{
-		{"simple", simpleSample, 1, 1, S, E, 1},
-		{"convexElbowDown", convexElbowDown, 1, 1, S, E, 6},
-		{"concaveElbowDown", concaveElbowDown, 1, 1, S, E, 2},
-		{"convexElbowUp", convexElbowUp, 2, 1, S, E, 1},
+		{"simple", simpleSample, 1, 1, "F", S, E, 1},
+		{"convexElbowDown", convexElbowDown, 1, 1, "F", S, E, 6},
+		{"concaveElbowDown", concaveElbowDown, 1, 1, "F", S, E, 2},
+		{"convexElbowUp", convexElbowUp, 2, 1, "F", S, E, 1},
 		//		{"harder", harderAreaSample, 4, 12, S, E, 8},
 	}
 	for _, test := range tests {
@@ -191,7 +192,7 @@ func TestMap_AreaCases(t *testing.T) {
 
 			require.Equal(t, "S", m.At(test.startingRow, test.startingColumn), "starting point is wrong")
 
-			area := m.Area(1, 1, S, E)
+			area := m.Area(test.startingRow, test.startingColumn, test.startingSymbol, S, E)
 			cleaned := m.CleanUp(test.startingRow, test.startingColumn, test.dir0, test.dir1).String()
 			assert.Equal(test.expectedArea, area, cleaned)
 		})

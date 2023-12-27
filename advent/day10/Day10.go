@@ -115,9 +115,9 @@ func (m *Map) CleanUp(startingRow int, startingColumn int, dir0 Direction, dir1 
 	return result
 }
 
-func (m *Map) Area(startingRow int, startingColumn int, dir0 Direction, dir1 Direction) int {
+func (m *Map) Area(startingRow int, startingColumn int, startingSymbol string, dir0 Direction, dir1 Direction) int {
 	cleanMap := m.CleanUp(startingRow, startingColumn, dir0, dir1)
-	cleanMap.set(startingRow, startingColumn, "F")
+	cleanMap.set(startingRow, startingColumn, startingSymbol)
 	area := 0
 	for row := 0; row < len(cleanMap.rows); row++ {
 		area += cleanMap.areaOfRow(row)
@@ -151,6 +151,7 @@ var (
 	metFoutside = state{"metFoutside"}
 	metLoutside = state{"metLoutside"}
 	metFinside  = state{"metFinside"}
+	metLinside  = state{"metLinside"}
 )
 
 var stateTransitions = []struct {
@@ -165,14 +166,19 @@ var stateTransitions = []struct {
 	{inside, "|", outside},
 	{inside, ".", inside},
 	{inside, "F", metFinside},
+	{inside, "L", metLinside},
 	{metFoutside, "-", metFoutside},
 	{metFoutside, "7", outside},
+	{metFoutside, "J", inside},
 	{metLoutside, "-", metLoutside},
 	{metLoutside, "J", outside},
 	{metLoutside, "7", inside},
 	{metFinside, "J", outside},
 	{metFinside, "-", metFinside},
 	{metFinside, "7", inside},
+	//{metLinside, "J", outside},
+	{metLinside, "-", metLinside},
+	{metLinside, "7", outside},
 }
 
 func updateState(currentState state, currentChar string) (state, error) {
