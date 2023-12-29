@@ -75,3 +75,11 @@ func TestStarField_Expand(t *testing.T) {
 	expected := []Coordinate{{0, 1}, {3, 0}, {3, 4}}
 	assert.Equal(t, expected, sf.stars, sf.String())
 }
+
+func Test_StarDistance(t *testing.T) {
+	assert := assert.New(t)
+
+	s0, s1 := Coordinate{0, 0}, Coordinate{3, 4}
+
+	assert.Equal(7, s0.Distance(s1))
+}

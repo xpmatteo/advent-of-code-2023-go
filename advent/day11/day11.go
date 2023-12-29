@@ -13,6 +13,17 @@ func (c Coordinate) String() string {
 	return fmt.Sprintf("(%d, %d)", c.row, c.col)
 }
 
+func (c Coordinate) Distance(other Coordinate) int {
+	return abs(c.row-other.row) + abs(c.col-other.col)
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
+}
+
 type StarField struct {
 	stars  []Coordinate
 	maxRow int
