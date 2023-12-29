@@ -69,7 +69,7 @@ func TestStarField_Expand(t *testing.T) {
 ...
 #..#`)
 
-	sf.Expand(1)
+	sf.Expand(2)
 
 	expected := []Coordinate{{0, 1}, {3, 0}, {3, 4}}
 	assert.Equal(t, expected, sf.stars, sf.String())
@@ -86,7 +86,8 @@ func Test_StarDistance(t *testing.T) {
 func Test_SamplePart1(t *testing.T) {
 	assert := assert.New(t)
 	sf := NewStarField(sampleData)
-	sf.Expand(1)
+
+	sf.Expand(2)
 
 	assert.Equal(374, sf.SumDistances())
 }
@@ -96,7 +97,25 @@ func Test_Acceptance_Part1(t *testing.T) {
 	bytes, err := os.ReadFile("day11.txt")
 	require.NoError(t, err)
 	sf := NewStarField(string(bytes))
-	sf.Expand(1)
+	sf.Expand(2)
 
 	assert.Equal(9521550, sf.SumDistances())
+}
+
+func Test_ParametricExpansion_10(t *testing.T) {
+	assert := assert.New(t)
+	sf := NewStarField(sampleData)
+
+	sf.Expand(10)
+
+	assert.Equal(1030, sf.SumDistances())
+}
+
+func Test_ParametricExpansion_100(t *testing.T) {
+	assert := assert.New(t)
+	sf := NewStarField(sampleData)
+
+	sf.Expand(100)
+
+	assert.Equal(8410, sf.SumDistances())
 }

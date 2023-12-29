@@ -135,9 +135,9 @@ func (sf *StarField) hasStar(row Row, col Col) bool {
 	return false
 }
 
-func (sf *StarField) Expand(distance int) {
-	sf.expandEmptyRows(distance)
-	sf.expandEmptyCols(distance)
+func (sf *StarField) Expand(replacement int) {
+	sf.expandEmptyRows(replacement - 1)
+	sf.expandEmptyCols(replacement - 1)
 }
 
 func (sf *StarField) SumDistances() int {
