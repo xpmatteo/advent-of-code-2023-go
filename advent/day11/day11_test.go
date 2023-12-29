@@ -97,6 +97,7 @@ func Test_Acceptance_Part1(t *testing.T) {
 	bytes, err := os.ReadFile("day11.txt")
 	require.NoError(t, err)
 	sf := NewStarField(string(bytes))
+
 	sf.Expand(2)
 
 	assert.Equal(9521550, sf.SumDistances())
@@ -118,4 +119,15 @@ func Test_ParametricExpansion_100(t *testing.T) {
 	sf.Expand(100)
 
 	assert.Equal(8410, sf.SumDistances())
+}
+
+func Test_Acceptance_Part2(t *testing.T) {
+	assert := assert.New(t)
+	bytes, err := os.ReadFile("day11.txt")
+	require.NoError(t, err)
+	sf := NewStarField(string(bytes))
+
+	sf.Expand(1_000_000)
+
+	assert.Equal(298_932_923_702, sf.SumDistances())
 }
