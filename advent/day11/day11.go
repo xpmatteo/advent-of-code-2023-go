@@ -34,22 +34,22 @@ type StarField struct {
 	maxCol Col
 }
 
-func (sf *StarField) expandEmptyRows() {
+func (sf *StarField) expandEmptyRows(distance int) {
 	for row := Row(0); row <= sf.maxRow; row++ {
 		if sf.isEmptyRow(row) {
-			sf.shiftStarsDown(row)
-			sf.maxRow++
-			row++
+			sf.shiftStarsDown(distance, row)
+			sf.maxRow += Row(distance)
+			row += Row(distance)
 		}
 	}
 }
 
-func (sf *StarField) expandEmptyCols() {
+func (sf *StarField) expandEmptyCols(distance int) {
 	for col := Col(0); col <= sf.maxCol; col++ {
 		if sf.isEmptyCol(col) {
-			sf.shiftStarsRight(col)
-			sf.maxCol++
-			col++
+			sf.shiftStarsRight(distance, col)
+			sf.maxCol += Col(distance)
+			col += Col(distance)
 		}
 	}
 }
@@ -72,18 +72,18 @@ func (sf *StarField) isEmptyCol(col Col) bool {
 	return true
 }
 
-func (sf *StarField) shiftStarsDown(row Row) {
+func (sf *StarField) shiftStarsDown(distance int, row Row) {
 	for i, star := range sf.stars {
 		if star.row > row {
-			sf.stars[i].row++
+			sf.stars[i].row += Row(distance)
 		}
 	}
 }
 
-func (sf *StarField) shiftStarsRight(col Col) {
+func (sf *StarField) shiftStarsRight(distance int, col Col) {
 	for i, star := range sf.stars {
 		if star.col > col {
-			sf.stars[i].col++
+			sf.stars[i].col += Col(distance)
 		}
 	}
 }
@@ -135,9 +135,9 @@ func (sf *StarField) hasStar(row Row, col Col) bool {
 	return false
 }
 
-func (sf *StarField) Expand() {
-	sf.expandEmptyRows()
-	sf.expandEmptyCols()
+func (sf *StarField) Expand(distance int) {
+	sf.expandEmptyRows(distance)
+	sf.expandEmptyCols(distance)
 }
 
 func (sf *StarField) SumDistances() int {
