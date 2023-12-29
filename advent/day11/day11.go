@@ -15,7 +15,7 @@ type StarField struct {
 func (sf *StarField) ExpandEmptyRows() {
 	increment := 0
 	for row := 0; row < 4; row++ {
-		if sf.emptyRow(row) {
+		if sf.isEmptyRow(row) {
 			increment++
 		} else {
 			sf.shiftStarsDown(increment, row)
@@ -23,8 +23,13 @@ func (sf *StarField) ExpandEmptyRows() {
 	}
 }
 
-func (sf *StarField) emptyRow(row int) bool {
-	return row == 1
+func (sf *StarField) isEmptyRow(row int) bool {
+	for _, star := range sf.stars {
+		if star.row == row {
+			return false
+		}
+	}
+	return true
 }
 
 func (sf *StarField) shiftStarsDown(increment int, row int) {
