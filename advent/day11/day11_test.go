@@ -31,8 +31,8 @@ func TestStarField_maxCoords(t *testing.T) {
 ...
 #..`)
 
-	assert.Equal(2, sf.maxRow)
-	assert.Equal(1, sf.maxCol)
+	assert.Equal(Row(2), sf.maxRow)
+	assert.Equal(Col(1), sf.maxCol)
 }
 
 func Test_IsEmptyRow(t *testing.T) {
