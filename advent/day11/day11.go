@@ -9,6 +9,10 @@ type Coordinate struct {
 	row, col int
 }
 
+func (c Coordinate) String() string {
+	return fmt.Sprintf("(%d, %d)", c.row, c.col)
+}
+
 type StarField struct {
 	stars  []Coordinate
 	maxRow int
@@ -16,12 +20,11 @@ type StarField struct {
 }
 
 func (sf *StarField) expandEmptyRows() {
-	increment := 0
 	for row := 0; row <= sf.maxRow; row++ {
 		if sf.isEmptyRow(row) {
-			increment++
-		} else {
-			sf.shiftStarsDown(increment, row)
+			sf.shiftStarsDown(row)
+			sf.maxRow++
+			row++
 		}
 	}
 }
@@ -33,8 +36,6 @@ func (sf *StarField) expandEmptyCols() {
 			sf.maxCol++
 			col++
 		}
-		fmt.Println("col ", col)
-		fmt.Println(sf)
 	}
 }
 
@@ -56,10 +57,10 @@ func (sf *StarField) isEmptyCol(col int) bool {
 	return true
 }
 
-func (sf *StarField) shiftStarsDown(increment int, row int) {
+func (sf *StarField) shiftStarsDown(row int) {
 	for i, star := range sf.stars {
-		if star.row == row {
-			sf.stars[i].row += increment
+		if star.row > row {
+			sf.stars[i].row++
 		}
 	}
 }
@@ -117,4 +118,9 @@ func (sf *StarField) hasStar(row int, col int) bool {
 		}
 	}
 	return false
+}
+
+func (sf *StarField) Expand() {
+	sf.expandEmptyRows()
+	sf.expandEmptyCols()
 }

@@ -45,14 +45,14 @@ func Test_IsEmptyRow(t *testing.T) {
 }
 
 func TestStarField_ExpandEmptyRows(t *testing.T) {
-	sf := NewStarField(`.#.
-...
-#..
-...`)
+	sf := NewStarField(`.
+#
+.
+#`)
 
 	sf.expandEmptyRows()
 
-	expected := []Coordinate{{0, 1}, {3, 0}}
+	expected := []Coordinate{{2, 0}, {5, 0}}
 	assert.Equal(t, expected, sf.stars)
 }
 
@@ -63,4 +63,15 @@ func TestStarField_ExpandEmptyCols(t *testing.T) {
 
 	expected := []Coordinate{{0, 0}, {0, 3}, {0, 4}, {0, 7}}
 	assert.Equal(t, expected, sf.stars)
+}
+
+func TestStarField_Expand(t *testing.T) {
+	sf := NewStarField(`.#.
+...
+#..#`)
+
+	sf.Expand()
+
+	expected := []Coordinate{{0, 1}, {3, 0}, {3, 4}}
+	assert.Equal(t, expected, sf.stars, sf.String())
 }
