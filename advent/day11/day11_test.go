@@ -1,10 +1,9 @@
 package day11
 
 import (
-	//"fmt"
 	"github.com/stretchr/testify/assert"
-	//"github.com/stretchr/testify/require"
-	//"testing"
+	"github.com/stretchr/testify/require"
+	"os"
 	"testing"
 )
 
@@ -82,4 +81,22 @@ func Test_StarDistance(t *testing.T) {
 	s0, s1 := Coordinate{0, 0}, Coordinate{3, 4}
 
 	assert.Equal(7, s0.Distance(s1))
+}
+
+func Test_SamplePart1(t *testing.T) {
+	assert := assert.New(t)
+	sf := NewStarField(sampleData)
+	sf.Expand()
+
+	assert.Equal(374, sf.SumDistances())
+}
+
+func Test_Acceptance_Part1(t *testing.T) {
+	assert := assert.New(t)
+	bytes, err := os.ReadFile("day11.txt")
+	require.NoError(t, err)
+	sf := NewStarField(string(bytes))
+	sf.Expand()
+
+	assert.Equal(9521550, sf.SumDistances())
 }

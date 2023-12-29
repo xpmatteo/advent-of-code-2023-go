@@ -135,3 +135,13 @@ func (sf *StarField) Expand() {
 	sf.expandEmptyRows()
 	sf.expandEmptyCols()
 }
+
+func (sf *StarField) SumDistances() int {
+	sum := 0
+	for _, starA := range sf.stars {
+		for _, starB := range sf.stars {
+			sum += starA.Distance(starB)
+		}
+	}
+	return sum / 2
+}
