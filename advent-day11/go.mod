@@ -1,6 +1,6 @@
-module xpug.it/advent/day11
+module github.com/xpmatteo/advent-of-code-2023-go/advent-day11
 
-go 1.21.4
+go 1.21.5
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
