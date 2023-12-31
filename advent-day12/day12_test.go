@@ -22,6 +22,8 @@ func Test(t *testing.T) {
 		{"## 2", []Match{"##"}},
 		{"### 3", []Match{"###"}},
 		{"? 1", []Match{"#"}},
+		{"?? 1", []Match{"#.", ".#"}},
+		{"??? 1", []Match{"#..", ".#.", "..#"}},
 	}
 	for _, test := range tests {
 		t.Run(string(test.pattern), func(t *testing.T) {
