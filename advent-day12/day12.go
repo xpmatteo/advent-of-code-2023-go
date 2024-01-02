@@ -34,6 +34,21 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 	return "", false
 }
 
+func waysToMatchASingleGroup(record string, groupLength int) []string {
+	result := []string{}
+	for i := 0; i < len(record); i++ {
+		if record[i:i+1] == "." {
+			continue
+		}
+		remainder, ok := singleMatch(record[i:], groupLength)
+		if !ok {
+			break
+		}
+		result = append(result, remainder)
+	}
+	return result
+}
+
 func multiGroup(record string, groups []int) int {
 	if len(groups) == 0 {
 		return 1

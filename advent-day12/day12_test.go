@@ -75,7 +75,14 @@ func Test_waysToMatchASingleGroup(t *testing.T) {
 		groupLength int
 		expected    []string
 	}{
-		{"??.??", 1, []string{".??", "??"}},
+		{"", 1, []string{}},
+		{"?", 1, []string{""}},
+		{"??", 1, []string{"", ""}},
+		{"???", 1, []string{"?", "", ""}},
+		{"??.##", 1, []string{".##", "##"}},
+		{"???.##", 1, []string{"?.##", ".##", "##"}},
+		{"?.?", 1, []string{"?", ""}},
+		{"?....?", 1, []string{"...?", ""}},
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
@@ -84,10 +91,6 @@ func Test_waysToMatchASingleGroup(t *testing.T) {
 			assert.Equal(test.expected, waysToMatchASingleGroup(test.record, test.groupLength))
 		})
 	}
-}
-
-func waysToMatchASingleGroup(record string, groupLength int) []string {
-	return []string{".??", "?"}
 }
 
 func Test_multiGroup(t *testing.T) {
