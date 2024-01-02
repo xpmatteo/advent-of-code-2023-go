@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -120,7 +121,14 @@ func Test_multiGroup(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
-			actual := multiGroup(test.record, test.groups)
+			variants := generateVariants(test.record)
+			count := 0
+			for _, variant := range variants {
+				if reflect.DeepEqual(variantToGroups(variant), test.groups) {
+					count++
+				}
+			}
+			actual := count
 
 			assert.Equal(t, test.expected, actual)
 		})
@@ -164,5 +172,30 @@ func Test_acceptancePart_I(t *testing.T) {
 
 	actual := part1(string(bytes))
 
-	assert.Equal(t, 8073, actual)
+	assert.Equal(t, 7674, actual)
+}
+
+func Test_generateVariants(t *testing.T) {
+	tests := []struct {
+		record   string
+		expected []string
+	}{
+		{"#", []string{"#"}},
+		{".", []string{"."}},
+		{"?", []string{".", "#"}},
+		{".??.", []string{"....", "..#.", ".#..", ".##."}},
+	}
+	for _, test := range tests {
+		t.Run(test.record, func(t *testing.T) {
+			assert := assert.New(t)
+
+			variants := generateVariants(test.record)
+
+			assert.Equal(test.expected, variants)
+		})
+	}
+}
+
+func Test_variantToGroups(t *testing.T) {
+	assert.Equal(t, []int{1, 2, 3}, variantToGroups("...#..##.###"))
 }
