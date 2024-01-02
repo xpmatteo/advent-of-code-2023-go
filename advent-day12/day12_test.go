@@ -28,7 +28,7 @@ func Test(t *testing.T) {
 		t.Run(string(test.pattern), func(t *testing.T) {
 			assert := assert.New(t)
 
-			remainder, ok := SimpleMatch(test.pattern, test.length)
+			remainder, ok := singleMatch(test.pattern, test.length)
 
 			assert.Equal(test.expectedOk, ok, "Expected ok")
 			if test.expectedOk {
