@@ -25,6 +25,11 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 		remainder = ""
 		return
 	}
+	if record[0:2] == "?#" {
+		remainder = record[2:]
+		ok = true
+		return
+	}
 
 	remainder = record[groupLength:]
 	ok = !strings.Contains(record[:groupLength], ".")

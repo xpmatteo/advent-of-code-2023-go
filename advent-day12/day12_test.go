@@ -36,7 +36,9 @@ func Test_singleMatch(t *testing.T) {
 
 			remainder, ok := singleMatch(test.pattern, test.length)
 
-			assert.Equal(test.expectedOk, ok, "Expected ok")
+			if !assert.Equal(test.expectedOk, ok, "Expected ok") {
+				return
+			}
 			if test.expectedOk {
 				assert.Equal(test.expectedRemainder, remainder)
 			}
