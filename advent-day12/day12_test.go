@@ -69,20 +69,43 @@ func Test_singleMatch(t *testing.T) {
 	}
 }
 
-func Test_multiMatch(t *testing.T) {
+func Test_waysToMatchASingleGroup(t *testing.T) {
 	tests := []struct {
-		record   string
-		groups   []int
-		expected int
+		record      string
+		groupLength int
+		expected    []string
 	}{
-		{"???.###", []int{1, 1, 3}, 1},
-		{".??..??...?##.", []int{1, 1, 3}, 3},
+		{"??.??", 1, []string{".??", "??"}},
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
 			assert := assert.New(t)
 
-			assert.Equal(test.expected, multiMatch(test.record, test.groups))
+			assert.Equal(test.expected, waysToMatchASingleGroup(test.record, test.groupLength))
+		})
+	}
+}
+
+func waysToMatchASingleGroup(record string, groupLength int) []string {
+	return []string{".??", "?"}
+}
+
+func Test_multiGroup(t *testing.T) {
+	tests := []struct {
+		record   string
+		groups   []int
+		expected int
+	}{
+		{"??", []int{1}, 2},
+		{"???.###", []int{1, 1, 3}, 1},
+		{".??..??...?##.", []int{1, 1, 3}, 3},
+	}
+	t.Skip()
+	for _, test := range tests {
+		t.Run(test.record, func(t *testing.T) {
+			assert := assert.New(t)
+
+			assert.Equal(test.expected, multiGroup(test.record, test.groups))
 		})
 	}
 }

@@ -34,16 +34,13 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 	return "", false
 }
 
-func multiMatch(record string, groups []int) int {
+func multiGroup(record string, groups []int) int {
 	if len(groups) == 0 {
-		return 0
+		return 1
 	}
 	remainder, ok := singleMatch(record, groups[0])
 	if !ok {
 		return 0
 	}
-	if ok && len(groups) == 1 {
-		return 1
-	}
-	return multiMatch(remainder, groups[1:])
+	return multiGroup(remainder, groups[1:]) //+ multiGroup(record[1:], groups)
 }
