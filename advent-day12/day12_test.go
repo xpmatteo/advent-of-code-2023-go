@@ -20,12 +20,15 @@ func Test_singleMatch(t *testing.T) {
 
 		{"#.", 1, ".", true},
 		{"?.", 1, ".", true},
+		{"?#", 1, "", true},
 		{"..", 1, "", false},
-
-		{"#..", 1, "..", true},
 		{"##", 1, "", false},
-		{"#?", 1, ".", true},
-		{"#??", 1, ".?", true},
+
+		{"#.#", 1, ".#", true},
+		{"?.#", 1, ".#", true},
+		{"??#", 1, ".#", true},
+		{"..#", 1, "", true},
+		{"###", 1, "", false},
 	}
 	for _, test := range tests {
 		t.Run(string(test.pattern), func(t *testing.T) {

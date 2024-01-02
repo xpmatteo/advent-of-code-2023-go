@@ -6,7 +6,16 @@ type Record string
 
 type Match string
 
+// return the input string without any initial "."
+func skipDotsPrefix(s string) string {
+	for len(s) > 0 && s[0:1] == "." {
+		s = s[1:]
+	}
+	return s
+}
+
 func singleMatch(record string, groupLength int) (remainder string, ok bool) {
+	record = skipDotsPrefix(record)
 	if len(record) < groupLength {
 		ok = false
 		return
