@@ -14,14 +14,6 @@ func skipDotsPrefix(s string) string {
 	return s
 }
 
-func numberOfInitialQuestionMarks(s string) int {
-	count := 0
-	for len(s) > 0 && s[0:1] == "?" {
-		count++
-	}
-	return count
-}
-
 func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 	record = skipDotsPrefix(record)
 
@@ -40,4 +32,8 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 		return singleMatch(record[1:], groupLength)
 	}
 	return "", false
+}
+
+func multiMatch(record string, groups []int) int {
+	return 0
 }

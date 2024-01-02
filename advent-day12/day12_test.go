@@ -68,3 +68,20 @@ func Test_singleMatch(t *testing.T) {
 		})
 	}
 }
+
+func Test_multiMatch(t *testing.T) {
+	tests := []struct {
+		record   string
+		groups   []int
+		expected int
+	}{
+		{"???.###", []int{1, 1, 3}, 1},
+	}
+	for _, test := range tests {
+		t.Run(test.record, func(t *testing.T) {
+			assert := assert.New(t)
+
+			assert.Equal(test.expected, multiMatch(test.record, test.groups))
+		})
+	}
+}
