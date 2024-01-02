@@ -1,6 +1,7 @@
 package advent_day12
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -82,12 +83,15 @@ func Test_waysToMatchASingleGroup(t *testing.T) {
 		{"???.##", 1, []string{".?.##", "..##", ".##"}},
 		{"?.?.", 1, []string{".?.", "."}},
 		{"?....?", 1, []string{"....?", ""}},
+		{".###", 3, []string{""}},
+		{".###?..", 3, []string{"..."}},
+		{".????..", 3, []string{"...", ".."}},
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
-			assert := assert.New(t)
+			actual := waysToMatchASingleGroup(test.record, test.groupLength)
 
-			assert.Equal(test.expected, waysToMatchASingleGroup(test.record, test.groupLength))
+			assert.Equal(t, test.expected, actual)
 		})
 	}
 }
@@ -111,14 +115,18 @@ func Test_multiGroup(t *testing.T) {
 		{"????.#...#...", []int{4, 1, 1}, 1},
 		{"????.######..#####.", []int{1, 6, 5}, 4},
 		{"?###????????", []int{3, 2, 1}, 10},
+		{".???????", []int{2, 1}, 10},
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
-			assert := assert.New(t)
-
 			actual := multiGroup(test.record, test.groups)
 
-			assert.Equal(test.expected, actual)
+			assert.Equal(t, test.expected, actual)
 		})
 	}
+}
+
+func Test_visual(t *testing.T) {
+	groups := multiGroupVisual("?###????????", []int{3, 2, 1})
+	fmt.Println(groups)
 }

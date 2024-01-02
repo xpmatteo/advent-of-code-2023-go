@@ -45,6 +45,9 @@ func waysToMatchASingleGroup(record string, groupLength int) []string {
 			break
 		}
 		result = append(result, remainder)
+		if record[i:i+1] == "#" {
+			break
+		}
 	}
 	return result
 }
@@ -65,6 +68,29 @@ func multiGroup(record string, groups []int) int {
 	}
 	for _, way := range ways {
 		result += multiGroup(way, groups[1:])
+	}
+	return result
+}
+
+func multiGroupVisual(record string, groups []int) []string {
+	if len(groups) == 0 {
+		return []string{}
+	}
+	result := []string{}
+	ways := waysToMatchASingleGroup(record, groups[0])
+
+	// remove adjacent duplicates from ways
+	for i := 1; i < len(ways); i++ {
+		if ways[i] == ways[i-1] {
+			ways = append(ways[:i], ways[i+1:]...)
+			i--
+		}
+	}
+	for _, way := range ways {
+		continuations := multiGroupVisual(way, groups[1:])
+		for _, c := range continuations {
+			result = append(result, way+c)
+		}
 	}
 	return result
 }
