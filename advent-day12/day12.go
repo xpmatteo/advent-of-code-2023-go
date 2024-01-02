@@ -1,5 +1,7 @@
 package advent_day12
 
+import "strings"
+
 type Record string
 
 type Match string
@@ -10,10 +12,14 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 		return
 	}
 	if len(record) == groupLength {
-		remainder, ok = "", true
+		ok = !strings.Contains(record, ".")
+		remainder = ""
 		return
 	}
-	remainder, ok = record[groupLength:], true
+
+	remainder = record[groupLength:]
+	ok = !strings.Contains(record[:groupLength], ".")
+
 	if remainder[0:1] == "#" {
 		ok = false
 	}
