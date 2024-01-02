@@ -1,8 +1,9 @@
 package advent_day12
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"os"
 	"testing"
 )
 
@@ -126,7 +127,42 @@ func Test_multiGroup(t *testing.T) {
 	}
 }
 
-func Test_visual(t *testing.T) {
-	groups := multiGroupVisual("?###????????", []int{3, 2, 1})
-	fmt.Println(groups)
+func Test_parseLine(t *testing.T) {
+	assert := assert.New(t)
+
+	record, groups := parse("#?. 1,2,3")
+
+	assert.Equal("#?.", record)
+	assert.Equal([]int{1, 2, 3}, groups)
+}
+
+func Test_parseLine_oneGroup(t *testing.T) {
+	assert := assert.New(t)
+
+	record, groups := parse("#?. 2")
+
+	assert.Equal("#?.", record)
+	assert.Equal([]int{2}, groups)
+}
+
+const sample = `???.### 1,1,3
+.??..??...?##. 1,1,3
+?#?#?#?#?#?#?#? 1,3,1,6
+????.#...#... 4,1,1
+????.######..#####. 1,6,5
+?###???????? 3,2,1`
+
+func Test_samplePart_I(t *testing.T) {
+	actual := part1(sample)
+
+	assert.Equal(t, 21, actual)
+}
+
+func Test_acceptancePart_I(t *testing.T) {
+	bytes, err := os.ReadFile("day12.txt")
+	require.NoError(t, err)
+
+	actual := part1(string(bytes))
+
+	assert.Equal(t, 8073, actual)
 }
