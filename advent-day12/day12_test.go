@@ -24,7 +24,6 @@ func Test_singleMatch(t *testing.T) {
 		{"#", 1, "", true},
 		{"?", 1, "", true},
 		{".", 1, "", false},
-
 		{"##", 2, "", true},
 		{"??", 2, "", true},
 		{"#?", 2, "", true},
@@ -32,24 +31,24 @@ func Test_singleMatch(t *testing.T) {
 		{"#.", 2, "", false},
 		{"?.", 2, "", false},
 
-		{"#.", 1, "", true},
-		{"?.", 1, "", true},
+		{"#.", 1, ".", true},
+		{"?.", 1, ".", true},
 
-		// skip ? prefix
 		{"?#", 1, "", true},
-		{"??#", 1, "#", true},
-		{"???#", 1, "?#", true},
-		{"?#?", 1, "", true},
-		{"??#?", 1, "#?", true},
-		{"???#?", 1, "?#?", true},
+		{"??#", 1, ".#", true},
+		{"???#", 1, ".?#", true},
+		{"?#?", 1, ".", true},
+		{"??#?", 1, ".#?", true},
+		{"???#?", 1, ".?#?", true},
 
 		{"..", 1, "", false},
 		{"##", 1, "", false},
 
-		{"#.#", 1, "#", true},
-		{"?.#", 1, "#", true},
-		{"??#", 1, "#", true},
+		{"#.#", 1, ".#", true},
+		{"?.#", 1, ".#", true},
+		{"??#", 1, ".#", true},
 		{"..#", 1, "", true},
+
 		{"###", 1, "", false},
 		{"?##", 1, "", false},
 	}
@@ -77,12 +76,12 @@ func Test_waysToMatchASingleGroup(t *testing.T) {
 	}{
 		{"", 1, []string{}},
 		{"?", 1, []string{""}},
-		{"??", 1, []string{"", ""}},
-		{"???", 1, []string{"?", "", ""}},
-		{"??.##", 1, []string{".##", "##"}},
-		{"???.##", 1, []string{"?.##", ".##", "##"}},
-		{"?.?", 1, []string{"?", ""}},
-		{"?....?", 1, []string{"...?", ""}},
+		{"??", 1, []string{".", ""}},
+		{"???", 1, []string{".?", ".", ""}},
+		{"??.##", 1, []string{"..##", ".##"}},
+		{"???.##", 1, []string{".?.##", "..##", ".##"}},
+		{"?.?.", 1, []string{".?.", "."}},
+		{"?....?", 1, []string{"....?", ""}},
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
@@ -109,12 +108,17 @@ func Test_multiGroup(t *testing.T) {
 		{"?#?#?#?#?", []int{1, 6}, 1},
 		{"?#?#?#?#?#?#?", []int{3, 1, 6}, 1},
 		{"?#?#?#?#?#?#?#?", []int{1, 3, 1, 6}, 1},
+		{"????.#...#...", []int{4, 1, 1}, 1},
+		{"????.######..#####.", []int{1, 6, 5}, 4},
+		{"?###????????", []int{3, 2, 1}, 10},
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
 			assert := assert.New(t)
 
-			assert.Equal(test.expected, multiGroup(test.record, test.groups))
+			actual := multiGroup(test.record, test.groups)
+
+			assert.Equal(test.expected, actual)
 		})
 	}
 }

@@ -26,7 +26,7 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 	prefix := record[:groupLength]
 	nextChar := record[groupLength : groupLength+1]
 	if !strings.Contains(prefix, ".") && nextChar != "#" {
-		return record[groupLength+1:], true
+		return "." + record[groupLength+1:], true
 	}
 	if record[0:1] == "?" {
 		return singleMatch(record[1:], groupLength)
