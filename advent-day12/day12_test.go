@@ -12,26 +12,49 @@ func Test_singleMatch(t *testing.T) {
 		expectedRemainder string
 		expectedOk        bool
 	}{
+		// record too short
 		{"", 1, "", false},
+		{"#", 2, "", false},
+		{"?", 2, "", false},
+		{"##", 3, "", false},
+		{"?#", 3, "", false},
+		{"#?", 3, "", false},
 
+		// record is as long as group
 		{"#", 1, "", true},
 		{"?", 1, "", true},
 		{".", 1, "", false},
+		{"##", 2, "", true},
+		{"??", 2, "", true},
+		{"#?", 2, "", true},
+		{"?#", 2, "", true},
+		{"#.", 2, "", false},
+		{"?.", 2, "", false},
 
-		{"#.", 1, ".", true},
-		{"?.", 1, ".", true},
+		// match on the first char
+		{"#.", 1, "", true},
+		{"?.", 1, "", true},
+
+		// skip ? prefix
 		{"?#", 1, "", true},
+		{"??#", 1, "#", true},
+		{"???#", 1, "?#", true},
+		{"?#?", 1, "", true},
+		{"??#?", 1, "#?", true},
+		{"???#?", 1, "?#?", true},
+
 		{"..", 1, "", false},
 		{"##", 1, "", false},
 
-		{"#.#", 1, ".#", true},
-		{"?.#", 1, ".#", true},
-		{"??#", 1, ".#", true},
+		{"#.#", 1, "#", true},
+		{"?.#", 1, "#", true},
+		{"??#", 1, "#", true},
 		{"..#", 1, "", true},
 		{"###", 1, "", false},
+		{"?##", 1, "", false},
 	}
 	for _, test := range tests {
-		t.Run(string(test.pattern), func(t *testing.T) {
+		t.Run(test.pattern, func(t *testing.T) {
 			assert := assert.New(t)
 
 			remainder, ok := singleMatch(test.pattern, test.length)
