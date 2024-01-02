@@ -53,9 +53,18 @@ func multiGroup(record string, groups []int) int {
 	if len(groups) == 0 {
 		return 1
 	}
-	remainder, ok := singleMatch(record, groups[0])
-	if !ok {
-		return 0
+	result := 0
+	ways := waysToMatchASingleGroup(record, groups[0])
+
+	// remove adjacent duplicates from ways
+	for i := 1; i < len(ways); i++ {
+		if ways[i] == ways[i-1] {
+			ways = append(ways[:i], ways[i+1:]...)
+			i--
+		}
 	}
-	return multiGroup(remainder, groups[1:]) //+ multiGroup(record[1:], groups)
+	for _, way := range ways {
+		result += multiGroup(way, groups[1:])
+	}
+	return result
 }

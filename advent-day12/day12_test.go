@@ -24,6 +24,7 @@ func Test_singleMatch(t *testing.T) {
 		{"#", 1, "", true},
 		{"?", 1, "", true},
 		{".", 1, "", false},
+
 		{"##", 2, "", true},
 		{"??", 2, "", true},
 		{"#?", 2, "", true},
@@ -31,7 +32,6 @@ func Test_singleMatch(t *testing.T) {
 		{"#.", 2, "", false},
 		{"?.", 2, "", false},
 
-		// match on the first char
 		{"#.", 1, "", true},
 		{"?.", 1, "", true},
 
@@ -101,9 +101,15 @@ func Test_multiGroup(t *testing.T) {
 	}{
 		{"??", []int{1}, 2},
 		{"???.###", []int{1, 1, 3}, 1},
-		{".??..??...?##.", []int{1, 1, 3}, 3},
+		{"..??...?##.", []int{1, 3}, 2},
+		{".??..??...?##.", []int{1, 1, 3}, 4},
+		{"#?#?#?", []int{6}, 1},
+		{"?#?#?#?", []int{6}, 2},
+		{"#?#?#?#?", []int{1, 6}, 1},
+		{"?#?#?#?#?", []int{1, 6}, 1},
+		{"?#?#?#?#?#?#?", []int{3, 1, 6}, 1},
+		{"?#?#?#?#?#?#?#?", []int{1, 3, 1, 6}, 1},
 	}
-	t.Skip()
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
 			assert := assert.New(t)
