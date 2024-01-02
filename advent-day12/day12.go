@@ -24,28 +24,17 @@ func numberOfInitialQuestionMarks(s string) int {
 
 func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 	record = skipDotsPrefix(record)
-	// partition the string in three parts
-	// [questionmarks][hashes][remainder]
-	// ???####...   can match between 4 and 7
-	// ???####?..   can match between 4 and 8
-	// ???####?#..  can match between 4 and 7 or 9
-	// ???####??#.. can match between 4 and 8 or 10
 
 	if len(record) < groupLength {
-		ok = false
-		return
+		return "", false
 	}
 	if len(record) == groupLength {
-		ok = !strings.Contains(record, ".")
-		remainder = ""
-		return
+		return "", !strings.Contains(record, ".")
 	}
 	prefix := record[:groupLength]
 	nextChar := record[groupLength : groupLength+1]
 	if !strings.Contains(prefix, ".") && nextChar != "#" {
-		ok = true
-		remainder = record[groupLength+1:]
-		return
+		return record[groupLength+1:], true
 	}
 	if record[0:1] == "?" {
 		return singleMatch(record[1:], groupLength)
