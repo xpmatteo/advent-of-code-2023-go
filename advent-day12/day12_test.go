@@ -14,15 +14,15 @@ func Test(t *testing.T) {
 	}{
 		{"", 1, "", false},
 		{"#", 1, "", true},
-		//{"#.", 1, "", true},
-		//{"#..", 1, ".", true},
-		//{"#.?", 1, "?", true},
-		//{"#.#", 1, "#", true},
-		//{"#...", 1, "..", true},
-		//{"#.##", 1, "##", true},
-		//{"##", 1, "", false},
-		//{"?", 1, "", true},
-		//{"?.", 1, "", true},
+		{"#.", 1, ".", true},
+		{"#..", 1, "..", true},
+		{"#.?", 1, ".?", true},
+		{"#.#", 1, ".#", true},
+		{"#...", 1, "...", true},
+		{"#.##", 1, ".##", true},
+		{"?", 1, "", true},
+		{"?.", 1, ".", true},
+		{"##", 1, "", false},
 	}
 	for _, test := range tests {
 		t.Run(string(test.pattern), func(t *testing.T) {
@@ -30,8 +30,10 @@ func Test(t *testing.T) {
 
 			remainder, ok := SimpleMatch(test.pattern, test.length)
 
-			assert.Equal(test.expectedOk, ok)
-			assert.Equal(test.expectedRemainder, remainder)
+			assert.Equal(test.expectedOk, ok, "Expected ok")
+			if test.expectedOk {
+				assert.Equal(test.expectedRemainder, remainder)
+			}
 		})
 	}
 }
