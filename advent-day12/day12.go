@@ -4,9 +4,17 @@ type Record string
 
 type Match string
 
-func singleMatch(record string, length int) (remainder string, ok bool) {
-	if len(record) >= length {
-		remainder, ok = record[length:], true
+func singleMatch(record string, groupLength int) (remainder string, ok bool) {
+	if len(record) < groupLength {
+		return
+	}
+	if len(record) == groupLength {
+		remainder, ok = "", true
+		return
+	}
+	remainder, ok = record[groupLength:], true
+	if remainder[0:1] == "#" {
+		ok = false
 	}
 	return
 }

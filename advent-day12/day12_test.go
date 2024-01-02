@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {
+func Test_singleMatch(t *testing.T) {
 	tests := []struct {
 		pattern           string
 		length            int
@@ -23,6 +23,7 @@ func Test(t *testing.T) {
 		{"?", 1, "", true},
 		{"?.", 1, ".", true},
 		{"##", 1, "", false},
+		//{"#?", 1, ".", false},
 	}
 	for _, test := range tests {
 		t.Run(string(test.pattern), func(t *testing.T) {
