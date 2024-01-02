@@ -35,5 +35,15 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 }
 
 func multiMatch(record string, groups []int) int {
-	return 0
+	if len(groups) == 0 {
+		return 0
+	}
+	remainder, ok := singleMatch(record, groups[0])
+	if !ok {
+		return 0
+	}
+	if ok && len(groups) == 1 {
+		return 1
+	}
+	return multiMatch(remainder, groups[1:])
 }

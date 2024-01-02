@@ -76,6 +76,7 @@ func Test_multiMatch(t *testing.T) {
 		expected int
 	}{
 		{"???.###", []int{1, 1, 3}, 1},
+		{".??..??...?##.", []int{1, 1, 3}, 3},
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
