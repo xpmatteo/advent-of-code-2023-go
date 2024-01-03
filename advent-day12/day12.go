@@ -53,11 +53,12 @@ func waysToMatchASingleGroup(record string, groupLength int) []string {
 
 func countMatches(record string, groups []int) int {
 	if len(groups) == 0 {
+		
 		if strings.Contains(record, "#") {
-			// we did not consume all the mandatory matches
+			// we did not consume all non-optional matches
 			return 0
 		}
-		// we did a good job!
+		// we found a correct match!
 		return 1
 	}
 	result := 0

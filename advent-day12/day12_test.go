@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -167,4 +168,26 @@ func Test_acceptancePart_I(t *testing.T) {
 	actual := part1(string(bytes))
 
 	assert.Equal(t, 7674, actual)
+}
+
+func Test_unfold(t *testing.T) {
+
+	assert.Equal(t, ".#?.#?.#?.#?.# 1,1,1,1,1", unfold(".# 1"))
+}
+
+func repeat(s string, count int) []string {
+	var result []string
+	for i := 0; i < 5; i++ {
+		result = append(result, s)
+	}
+	return result
+}
+
+func unfold(line string) string {
+	tokens := strings.Split(line, " ")
+	record5 := repeat(tokens[0], 5)
+	unfoldedRecord := strings.Join(record5, "?")
+	groups5 := repeat(tokens[1], 5)
+	unfoldedGroups := strings.Join(groups5, ",")
+	return unfoldedRecord + " " + unfoldedGroups
 }
