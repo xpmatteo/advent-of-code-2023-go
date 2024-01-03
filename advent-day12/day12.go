@@ -53,10 +53,23 @@ func waysToMatchASingleGroup(record string, groupLength int, stopWhenRecordLengt
 }
 
 func countMatches(record string, groups []int) int {
+	countMatchesCache = make(map[string]int)
 	return countMatchesAux(record, groups, 0)
 }
 
+func countMatchesCacheKey(record string, groups []int) string {
+	return fmt.Sprintf("%s %v", record, groups)
+}
+
+var countMatchesCache map[string]int
+
 func countMatchesAux(record string, groups []int, recursionLevel int) int {
+	cacheKey := countMatchesCacheKey(record, groups)
+	cachedValue, ok := countMatchesCache[cacheKey]
+	if ok {
+		return cachedValue
+	}
+
 	if len(groups) == 0 {
 		if strings.Contains(record, "#") {
 			// we did not consume all non-optional matches
@@ -75,12 +88,10 @@ func countMatchesAux(record string, groups []int, recursionLevel int) int {
 			i--
 		}
 	}
-	for i, way := range ways {
-		if recursionLevel < 3 {
-			fmt.Printf("countMatches: level %4d %02d/%02d group %v way %s\n", recursionLevel, i, len(ways), groups, way)
-		}
+	for _, way := range ways {
 		result += countMatchesAux(way, groups[1:], recursionLevel+1)
 	}
+	countMatchesCache[cacheKey] = result
 	return result
 }
 
@@ -122,14 +133,13 @@ func part2(input string) int {
 		}
 		record, groups := parse(unfold(line))
 		result += countMatches(record, groups)
-		//fmt.Printf("Done line %d\r", i)
 	}
 	return result
 }
 
 func repeat(s string, count int) []string {
 	var result []string
-	for i := 0; i < 5; i++ {
+	for i := 0; i < count; i++ {
 		result = append(result, s)
 	}
 	return result

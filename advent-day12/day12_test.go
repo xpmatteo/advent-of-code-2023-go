@@ -178,8 +178,7 @@ func Test_unfoldedCombinations(t *testing.T) {
 }
 
 func Test_unfoldedCombinations_tricky(t *testing.T) {
-	//t.Skip("too slow")
-	assert.Equal(t, 16384, countMatches(parse(unfold("?????.??##?????????. 2,6,2"))))
+	assert.Equal(t, 1687626340, countMatches(parse(unfold("?????.??##?????????. 2,6,2"))))
 }
 
 func Test_samplePart_II(t *testing.T) {
@@ -189,13 +188,12 @@ func Test_samplePart_II(t *testing.T) {
 }
 
 func Test_acceptancePart_II(t *testing.T) {
-	t.Skip("too slow")
 	bytes, err := os.ReadFile("day12.txt")
 	require.NoError(t, err)
 
 	actual := part2(string(bytes))
 
-	assert.Equal(t, 7674, actual)
+	assert.Equal(t, 4443895258186, actual)
 }
 
 func Test_estimateSizeOfGroups(t *testing.T) {
