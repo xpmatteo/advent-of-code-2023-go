@@ -1,6 +1,9 @@
 package advent_day12
 
 import (
+	"fmt"
+	"math"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -106,7 +109,62 @@ func part1(input string) int {
 			continue
 		}
 		record, groups := parse(line)
-		result += countMatches(record, groups)
+		matches := countMatches(record, groups)
+		matchesAlt := countMatchesAlt(record, groups)
+		if matches != matchesAlt {
+			panic(fmt.Sprintf("Diff result: %s wrong %d right %d", line, matches, matchesAlt))
+		}
+		result += matches
+	}
+	return result
+}
+
+// --- alternative approach
+
+func countMatchesAlt(record string, groups []int) int {
+	variants := generateVariants(record)
+	count := 0
+	for _, variant := range variants {
+		if reflect.DeepEqual(variantToGroups(variant), groups) {
+			count++
+		}
+	}
+	return count
+}
+
+func generateVariants(record string) []string {
+	count := strings.Count(record, "?")
+	result := []string{}
+	for i := 0; i < int(math.Pow(2, float64(count))); i++ {
+		format := fmt.Sprintf("%%0%db", count) // pad with zeroes
+		numberInBinary := fmt.Sprintf(format, i)
+		variant := ""
+		for j, k := 0, 0; j < len(record); j++ {
+			char := record[j : j+1]
+			switch char {
+			case ".", "#":
+				variant += char
+			case "?":
+				if numberInBinary[k:k+1] == "0" {
+					variant += "."
+				} else {
+					variant += "#"
+				}
+				k++
+			}
+		}
+		result = append(result, variant)
+	}
+	return result
+}
+
+func variantToGroups(variant string) []int {
+	result := []int{}
+	tokens := strings.Split(variant, ".")
+	for _, token := range tokens {
+		if len(token) > 0 {
+			result = append(result, len(token))
+		}
 	}
 	return result
 }
