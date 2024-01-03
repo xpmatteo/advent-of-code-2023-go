@@ -97,7 +97,7 @@ func Test_waysToMatchASingleGroup(t *testing.T) {
 	}
 }
 
-func Test_multiGroup(t *testing.T) {
+func Test_countMatches(t *testing.T) {
 	tests := []struct {
 		record   string
 		groups   []int
@@ -117,6 +117,8 @@ func Test_multiGroup(t *testing.T) {
 		{"????.######..#####.", []int{1, 6, 5}, 4},
 		{"?###????????", []int{3, 2, 1}, 10},
 		{".???????", []int{2, 1}, 10},
+		{".????..?????#?#??", []int{5}, 3},
+		{"????????..?????#?#??", []int{3, 5}, 21}, // 6 * 3 + 2 + 1
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
