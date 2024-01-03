@@ -90,7 +90,7 @@ func Test_waysToMatchASingleGroup(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
-			actual := waysToMatchASingleGroup(test.record, test.groupLength)
+			actual := waysToMatchASingleGroup(test.record, test.groupLength, 1)
 
 			assert.Equal(t, test.expected, actual)
 		})
@@ -178,7 +178,7 @@ func Test_unfoldedCombinations(t *testing.T) {
 }
 
 func Test_unfoldedCombinations_tricky(t *testing.T) {
-	t.Skip("too slow")
+	//t.Skip("too slow")
 	assert.Equal(t, 16384, countMatches(parse(unfold("?????.??##?????????. 2,6,2"))))
 }
 
@@ -196,4 +196,11 @@ func Test_acceptancePart_II(t *testing.T) {
 	actual := part2(string(bytes))
 
 	assert.Equal(t, 7674, actual)
+}
+
+func Test_estimateSizeOfGroups(t *testing.T) {
+	assert.Equal(t, 0, estimateSizeOfGroups([]int{}))
+	assert.Equal(t, 2, estimateSizeOfGroups([]int{2}))
+	assert.Equal(t, 4, estimateSizeOfGroups([]int{1, 2}))
+	assert.Equal(t, 8, estimateSizeOfGroups([]int{1, 2, 3}))
 }
