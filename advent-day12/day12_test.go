@@ -120,7 +120,7 @@ func Test_multiGroup(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
-			actual := multiGroup(test.record, test.groups)
+			actual := countMatches(test.record, test.groups)
 
 			assert.Equal(t, test.expected, actual)
 		})
@@ -164,5 +164,5 @@ func Test_acceptancePart_I(t *testing.T) {
 
 	actual := part1(string(bytes))
 
-	assert.Equal(t, 8073, actual)
+	assert.Equal(t, 7674, actual)
 }

@@ -38,24 +38,31 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 }
 
 func waysToMatchASingleGroup(record string, groupLength int) []string {
-	result := []string{}
-	for i := 0; i < len(record); i++ {
-		if record[i:i+1] == "." {
-			continue
-		}
-		remainder, ok := singleMatch(record[i:], groupLength)
-		if !ok {
-			break
-		}
-		result = append(result, remainder)
-		if record[i:i+1] == "#" {
-			break
-		}
+	if len(record) == 0 {
+		return []string{}
 	}
-	return result
+	if record[0] == '.' {
+		return waysToMatchASingleGroup(record[1:], groupLength)
+	}
+	if record[0] == '#' {
+		remainder, ok := singleMatch(record, groupLength)
+		if !ok {
+			return []string{}
+		}
+		return []string{remainder}
+	}
+	if record[0] == '?' {
+		remainder, ok := singleMatch(record, groupLength)
+		result := []string{}
+		if ok {
+			result = append(result, remainder)
+		}
+		return append(result, waysToMatchASingleGroup(record[1:], groupLength)...)
+	}
+	panic("unknown first char: " + record)
 }
 
-func multiGroup(record string, groups []int) int {
+func countMatches(record string, groups []int) int {
 	if len(groups) == 0 {
 		return 1
 	}
@@ -70,7 +77,7 @@ func multiGroup(record string, groups []int) int {
 		}
 	}
 	for _, way := range ways {
-		result += multiGroup(way, groups[1:])
+		result += countMatches(way, groups[1:])
 	}
 	return result
 }
@@ -99,7 +106,7 @@ func part1(input string) int {
 			continue
 		}
 		record, groups := parse(line)
-		result += multiGroup(record, groups)
+		result += countMatches(record, groups)
 	}
 	return result
 }
