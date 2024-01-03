@@ -5,23 +5,12 @@ import (
 	"strings"
 )
 
-type Record string
-
-type Match string
-
-// return the input string without any initial "."
-func skipDotsPrefix(s string) string {
-	for len(s) > 0 && s[0:1] == "." {
-		s = s[1:]
-	}
-	return s
-}
-
 func singleMatch(record string, groupLength int) (remainder string, ok bool) {
-	record = skipDotsPrefix(record)
-
 	if len(record) < groupLength {
 		return "", false
+	}
+	if record[0:1] == "." {
+		return singleMatch(record[1:], groupLength)
 	}
 	if len(record) == groupLength {
 		return "", !strings.Contains(record, ".")
@@ -65,14 +54,16 @@ func waysToMatchASingleGroup(record string, groupLength int) []string {
 func countMatches(record string, groups []int) int {
 	if len(groups) == 0 {
 		if strings.Contains(record, "#") {
+			// we did not consume all the mandatory matches
 			return 0
 		}
+		// we did a good job!
 		return 1
 	}
 	result := 0
 	ways := waysToMatchASingleGroup(record, groups[0])
 
-	// remove adjacent duplicates from ways
+	// remove adjacent duplicates from ways; they correspond to non-significant variants
 	for i := 1; i < len(ways); i++ {
 		if ways[i] == ways[i-1] {
 			ways = append(ways[:i], ways[i+1:]...)
