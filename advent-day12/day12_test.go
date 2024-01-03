@@ -4,7 +4,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"os"
-	"strings"
 	"testing"
 )
 
@@ -171,23 +170,15 @@ func Test_acceptancePart_I(t *testing.T) {
 }
 
 func Test_unfold(t *testing.T) {
-
 	assert.Equal(t, ".#?.#?.#?.#?.# 1,1,1,1,1", unfold(".# 1"))
 }
 
-func repeat(s string, count int) []string {
-	var result []string
-	for i := 0; i < 5; i++ {
-		result = append(result, s)
-	}
-	return result
+func Test_unfoldedCombinations(t *testing.T) {
+	assert.Equal(t, 16384, countMatches(parse(unfold(".??..??...?##. 1,1,3"))))
 }
 
-func unfold(line string) string {
-	tokens := strings.Split(line, " ")
-	record5 := repeat(tokens[0], 5)
-	unfoldedRecord := strings.Join(record5, "?")
-	groups5 := repeat(tokens[1], 5)
-	unfoldedGroups := strings.Join(groups5, ",")
-	return unfoldedRecord + " " + unfoldedGroups
+func Test_samplePart_II(t *testing.T) {
+	actual := part2(sample)
+
+	assert.Equal(t, 525152, actual)
 }

@@ -53,7 +53,7 @@ func waysToMatchASingleGroup(record string, groupLength int) []string {
 
 func countMatches(record string, groups []int) int {
 	if len(groups) == 0 {
-		
+
 		if strings.Contains(record, "#") {
 			// we did not consume all non-optional matches
 			return 0
@@ -104,4 +104,34 @@ func part1(input string) int {
 		result += countMatches(record, groups)
 	}
 	return result
+}
+
+func part2(input string) int {
+	result := 0
+	lines := strings.Split(input, "\n")
+	for _, line := range lines {
+		if len(line) < 1 {
+			continue
+		}
+		record, groups := parse(unfold(line))
+		result += countMatches(record, groups)
+	}
+	return result
+}
+
+func repeat(s string, count int) []string {
+	var result []string
+	for i := 0; i < 5; i++ {
+		result = append(result, s)
+	}
+	return result
+}
+
+func unfold(line string) string {
+	tokens := strings.Split(line, " ")
+	record5 := repeat(tokens[0], 5)
+	unfoldedRecord := strings.Join(record5, "?")
+	groups5 := repeat(tokens[1], 5)
+	unfoldedGroups := strings.Join(groups5, ",")
+	return unfoldedRecord + " " + unfoldedGroups
 }
