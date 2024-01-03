@@ -8,6 +8,96 @@ import (
 	"testing"
 )
 
+func Test_singleMatch(t *testing.T) {
+	tests := []struct {
+		pattern           string
+		length            int
+		expectedRemainder string
+		expectedOk        bool
+	}{
+		// record too short
+		{"", 1, "", false},
+		{"#", 2, "", false},
+		{"?", 2, "", false},
+		{"##", 3, "", false},
+		{"?#", 3, "", false},
+		{"#?", 3, "", false},
+
+		// record is as long as group
+		{"#", 1, "", true},
+		{"?", 1, "", true},
+		{".", 1, "", false},
+		{"##", 2, "", true},
+		{"??", 2, "", true},
+		{"#?", 2, "", true},
+		{"?#", 2, "", true},
+		{"#.", 2, "", false},
+		{"?.", 2, "", false},
+
+		{"#.", 1, ".", true},
+		{"?.", 1, ".", true},
+
+		{"?#", 1, "", true},
+		{"??#", 1, ".#", true},
+		{"???#", 1, ".?#", true},
+		{"?#?", 1, ".", true},
+		{"??#?", 1, ".#?", true},
+		{"???#?", 1, ".?#?", true},
+
+		{"..", 1, "", false},
+		{"##", 1, "", false},
+
+		{"#.#", 1, ".#", true},
+		{"?.#", 1, ".#", true},
+		{"??#", 1, ".#", true},
+		{"..#", 1, "", true},
+
+		{"###", 1, "", false},
+		{"?##", 1, "", false},
+	}
+	for _, test := range tests {
+		t.Run(test.pattern, func(t *testing.T) {
+			assert := assert.New(t)
+
+			remainder, ok := singleMatch(test.pattern, test.length)
+
+			if !assert.Equal(test.expectedOk, ok, "Expected ok") {
+				return
+			}
+			if test.expectedOk {
+				assert.Equal(test.expectedRemainder, remainder)
+			}
+		})
+	}
+}
+
+func Test_waysToMatchASingleGroup(t *testing.T) {
+	tests := []struct {
+		record      string
+		groupLength int
+		expected    []string
+	}{
+		{"", 1, []string{}},
+		{"?", 1, []string{""}},
+		{"??", 1, []string{".", ""}},
+		{"???", 1, []string{".?", ".", ""}},
+		{"??.##", 1, []string{"..##", ".##"}},
+		{"???.##", 1, []string{".?.##", "..##", ".##"}},
+		{"?.?.", 1, []string{".?.", "."}},
+		{"?....?", 1, []string{"....?", ""}},
+		{".###", 3, []string{""}},
+		{".###?..", 3, []string{"..."}},
+		{".????..", 3, []string{"...", ".."}},
+	}
+	for _, test := range tests {
+		t.Run(test.record, func(t *testing.T) {
+			actual := waysToMatchASingleGroup(test.record, test.groupLength)
+
+			assert.Equal(t, test.expected, actual)
+		})
+	}
+}
+
 func Test_multiGroup(t *testing.T) {
 	tests := []struct {
 		record   string
@@ -77,7 +167,6 @@ func Test_samplePart_I(t *testing.T) {
 }
 
 func Test_acceptancePart_I(t *testing.T) {
-	t.Skip("too slow")
 	bytes, err := os.ReadFile("day12.txt")
 	require.NoError(t, err)
 
