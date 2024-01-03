@@ -27,12 +27,12 @@ func singleMatch(record string, groupLength int) (remainder string, ok bool) {
 	return "", false
 }
 
-func waysToMatchASingleGroup(record string, groupLength int, stopWhenRecordLengthIsBelow int) []string {
-	if len(record) < stopWhenRecordLengthIsBelow {
+func waysToMatchASingleGroup(record string, groupLength int) []string {
+	if len(record) < groupLength {
 		return []string{}
 	}
 	if record[0] == '.' {
-		return waysToMatchASingleGroup(record[1:], groupLength, stopWhenRecordLengthIsBelow)
+		return waysToMatchASingleGroup(record[1:], groupLength)
 	}
 	if record[0] == '#' {
 		remainder, ok := singleMatch(record, groupLength)
@@ -47,7 +47,7 @@ func waysToMatchASingleGroup(record string, groupLength int, stopWhenRecordLengt
 		if ok {
 			result = append(result, remainder)
 		}
-		return append(result, waysToMatchASingleGroup(record[1:], groupLength, stopWhenRecordLengthIsBelow)...)
+		return append(result, waysToMatchASingleGroup(record[1:], groupLength)...)
 	}
 	panic("unknown first char: " + record)
 }
@@ -79,7 +79,7 @@ func countMatchesAux(record string, groups []int, recursionLevel int) int {
 		return 1
 	}
 	result := 0
-	ways := waysToMatchASingleGroup(record, groups[0], 1+estimateSizeOfGroups(groups[1:]))
+	ways := waysToMatchASingleGroup(record, groups[0])
 
 	// remove adjacent duplicates from ways
 	for i := 1; i < len(ways); i++ {
@@ -152,16 +152,4 @@ func unfold(line string) string {
 	groups5 := repeat(tokens[1], 5)
 	unfoldedGroups := strings.Join(groups5, ",")
 	return unfoldedRecord + " " + unfoldedGroups
-}
-
-func estimateSizeOfGroups(ints []int) int {
-	if len(ints) == 0 {
-		return 0
-	}
-	result := 0
-	for _, elem := range ints {
-		result += elem
-	}
-	result += len(ints) - 1
-	return result
 }

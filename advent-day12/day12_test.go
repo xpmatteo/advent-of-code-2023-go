@@ -90,7 +90,7 @@ func Test_waysToMatchASingleGroup(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.record, func(t *testing.T) {
-			actual := waysToMatchASingleGroup(test.record, test.groupLength, 1)
+			actual := waysToMatchASingleGroup(test.record, test.groupLength)
 
 			assert.Equal(t, test.expected, actual)
 		})
@@ -194,11 +194,4 @@ func Test_acceptancePart_II(t *testing.T) {
 	actual := part2(string(bytes))
 
 	assert.Equal(t, 4443895258186, actual)
-}
-
-func Test_estimateSizeOfGroups(t *testing.T) {
-	assert.Equal(t, 0, estimateSizeOfGroups([]int{}))
-	assert.Equal(t, 2, estimateSizeOfGroups([]int{2}))
-	assert.Equal(t, 4, estimateSizeOfGroups([]int{1, 2}))
-	assert.Equal(t, 8, estimateSizeOfGroups([]int{1, 2, 3}))
 }
