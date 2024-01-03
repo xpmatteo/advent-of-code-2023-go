@@ -52,8 +52,11 @@ func waysToMatchASingleGroup(record string, groupLength int) []string {
 }
 
 func countMatches(record string, groups []int) int {
-	if len(groups) == 0 {
+	return countMatchesAux(record, groups, 0)
+}
 
+func countMatchesAux(record string, groups []int, recursionLevel int) int {
+	if len(groups) == 0 {
 		if strings.Contains(record, "#") {
 			// we did not consume all non-optional matches
 			return 0
@@ -64,7 +67,7 @@ func countMatches(record string, groups []int) int {
 	result := 0
 	ways := waysToMatchASingleGroup(record, groups[0])
 
-	// remove adjacent duplicates from ways; they correspond to non-significant variants
+	// remove adjacent duplicates from ways
 	for i := 1; i < len(ways); i++ {
 		if ways[i] == ways[i-1] {
 			ways = append(ways[:i], ways[i+1:]...)
@@ -72,7 +75,10 @@ func countMatches(record string, groups []int) int {
 		}
 	}
 	for _, way := range ways {
-		result += countMatches(way, groups[1:])
+		//if recursionLevel < 3 {
+		//	fmt.Printf("countMatches: level %4d group %v way %s\n", recursionLevel, groups, way)
+		//}
+		result += countMatchesAux(way, groups[1:], recursionLevel+1)
 	}
 	return result
 }
@@ -115,6 +121,7 @@ func part2(input string) int {
 		}
 		record, groups := parse(unfold(line))
 		result += countMatches(record, groups)
+		//fmt.Printf("Done line %d\r", i)
 	}
 	return result
 }
