@@ -71,3 +71,17 @@ func Test_isPalyndrome(t *testing.T) {
 		})
 	}
 }
+
+func Test_columns(t *testing.T) {
+	var testCases = []struct {
+		p       string
+		columns []Column
+	}{
+		{"##\n.#\n..", []Column{"#..", "##."}},
+	}
+	for _, test := range testCases {
+		t.Run(string(test.p), func(t *testing.T) {
+			assert.Equal(t, test.columns, NewPattern(test.p).columns())
+		})
+	}
+}

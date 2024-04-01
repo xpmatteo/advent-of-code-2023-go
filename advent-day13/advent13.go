@@ -3,6 +3,7 @@ package advent_day13
 import "strings"
 
 type Line string
+type Column string
 type Pattern []Line
 
 func NewPattern(p string) Pattern {
@@ -16,6 +17,18 @@ func NewPattern(p string) Pattern {
 
 func (pattern Pattern) lines() []Line {
 	return pattern
+}
+
+func (pattern Pattern) columns() []Column {
+	columns := make([]Column, len(pattern[0]))
+	for i := 0; i < len(pattern[0]); i++ {
+		column := ""
+		for _, line := range pattern {
+			column += string(line[i])
+		}
+		columns[i] = Column(column)
+	}
+	return columns
 }
 
 func (line Line) isPalyndromic() bool {
