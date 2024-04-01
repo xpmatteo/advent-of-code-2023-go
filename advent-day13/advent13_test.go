@@ -39,7 +39,8 @@ func Test_verticalSymmetry(t *testing.T) {
 		{".#.#", 0},
 		{".#..###", 0},
 
-		//{"##\n##", 1},
+		{"##\n##", 1},
+		{"##\n.#", 0},
 
 		//{pattern1, 5},
 		//{pattern2, 400},
@@ -66,28 +67,7 @@ func Test_isPalyndrome(t *testing.T) {
 	}
 	for _, test := range testCases {
 		t.Run(string(test.line), func(t *testing.T) {
-			assert.Equal(t, test.isPalyndrome, Line(test.line).isPalyndromic())
+			assert.Equal(t, test.isPalyndrome, test.line.isPalyndromic())
 		})
 	}
-}
-
-func score(pattern Pattern) int {
-	line := pattern[0]
-	if isEven(len(line)) && line.isPalyndromic() {
-		return len(line) / 2
-	}
-	if isEven(len(line)) {
-		return 0
-	}
-	if line[:len(line)-1].isPalyndromic() {
-		return len(line) / 2
-	}
-	if line[1:].isPalyndromic() {
-		return len(line)/2 + 1
-	}
-	return 0
-}
-
-func isEven(n int) bool {
-	return n%2 == 0
 }
