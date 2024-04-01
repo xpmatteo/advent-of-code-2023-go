@@ -14,12 +14,12 @@ const pattern1 = `#.##..##.
 #.#.##.#.`
 
 const pattern2 = `1 #...##..# 1
-2 #....#..# 2
-3 ..##..### 3
-4v#####.##.v4
-5^#####.##.^5
-6 ..##..### 6
-7 #....#..# 7`
+#....#..#
+..##..###
+#####.##.
+#####.##.
+..##..###
+#....#..#`
 
 func Test_verticalSymmetry(t *testing.T) {
 	var testCases = []struct {
@@ -38,19 +38,22 @@ func Test_verticalSymmetry(t *testing.T) {
 
 		{".#.#", 0},
 		{".#..###", 0},
+
+		//{"##\n##", 1},
+
 		//{pattern1, 5},
 		//{pattern2, 400},
 	}
 	for _, test := range testCases {
 		t.Run(test.pattern, func(t *testing.T) {
-			assert.Equal(t, test.score, score(test.pattern))
+			assert.Equal(t, test.score, score(NewPattern(test.pattern)))
 		})
 	}
 }
 
 func Test_isPalyndrome(t *testing.T) {
 	var testCases = []struct {
-		pattern      string
+		line         Line
 		isPalyndrome bool
 	}{
 		{"##", true},
@@ -62,32 +65,25 @@ func Test_isPalyndrome(t *testing.T) {
 		//{pattern2, 400},
 	}
 	for _, test := range testCases {
-		t.Run(test.pattern, func(t *testing.T) {
-			assert.Equal(t, test.isPalyndrome, isPalyndrome(test.pattern))
+		t.Run(string(test.line), func(t *testing.T) {
+			assert.Equal(t, test.isPalyndrome, Line(test.line).isPalyndromic())
 		})
 	}
 }
 
-func isPalyndrome(pattern string) bool {
-	for i := 0; i < len(pattern)/2; i++ {
-		if pattern[i] != pattern[len(pattern)-1-i] {
-			return false
-		}
+func score(pattern Pattern) int {
+	line := pattern[0]
+	if isEven(len(line)) && line.isPalyndromic() {
+		return len(line) / 2
 	}
-	return true
-}
-func score(pattern string) int {
-	if isEven(len(pattern)) && isPalyndrome(pattern) {
-		return len(pattern) / 2
-	}
-	if isEven(len(pattern)) {
+	if isEven(len(line)) {
 		return 0
 	}
-	if isPalyndrome(pattern[:len(pattern)-1]) {
-		return len(pattern) / 2
+	if line[:len(line)-1].isPalyndromic() {
+		return len(line) / 2
 	}
-	if isPalyndrome(pattern[1:]) {
-		return len(pattern)/2 + 1
+	if line[1:].isPalyndromic() {
+		return len(line)/2 + 1
 	}
 	return 0
 }
