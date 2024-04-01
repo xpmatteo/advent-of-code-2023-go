@@ -13,7 +13,7 @@ const pattern1 = `#.##..##.
 ..##..##.
 #.#.##.#.`
 
-const pattern2 = `1 #...##..# 1
+const pattern2 = `#...##..#
 #....#..#
 ..##..###
 #####.##.
@@ -36,14 +36,8 @@ func Test_verticalSymmetry(t *testing.T) {
 		{"#..##", 2},
 		{".####", 3},
 
-		{".#.#", 0},
-		{".#..###", 0},
-
-		{"##\n##", 1},
-		{"##\n.#", 0},
-
-		//{pattern1, 5},
-		//{pattern2, 400},
+		{pattern1, 5},
+		{pattern2, 400},
 	}
 	for _, test := range testCases {
 		t.Run(test.pattern, func(t *testing.T) {
@@ -80,7 +74,7 @@ func Test_columns(t *testing.T) {
 		{"##\n.#\n..", []Column{"#..", "##."}},
 	}
 	for _, test := range testCases {
-		t.Run(string(test.p), func(t *testing.T) {
+		t.Run(test.p, func(t *testing.T) {
 			assert.Equal(t, test.columns, NewPattern(test.p).columns())
 		})
 	}

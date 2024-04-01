@@ -2,9 +2,13 @@ package advent_day13
 
 import "strings"
 
+type Pattern []Line
 type Line string
 type Column string
-type Pattern []Line
+
+func (c Column) score() int {
+	return Line(c).score()
+}
 
 func NewPattern(p string) Pattern {
 	split := strings.Split(p, "\n")
@@ -41,9 +45,29 @@ func (line Line) isPalyndromic() bool {
 }
 
 func score(pattern Pattern) int {
+	v := verticalScore(pattern)
+	h := horizontalScore(pattern)
+	if v == 0 && h == 0 {
+		panic("both hor and vert are 0")
+	}
+	return v + h*100
+}
+
+func verticalScore(pattern Pattern) int {
 	candidateScore := pattern.lines()[0].score()
 	for _, line := range pattern.lines() {
 		if line.score() != candidateScore {
+			return 0
+		}
+	}
+	return candidateScore
+}
+
+func horizontalScore(pattern Pattern) int {
+	columns := pattern.columns()
+	candidateScore := columns[0].score()
+	for _, column := range columns {
+		if column.score() != candidateScore {
 			return 0
 		}
 	}
