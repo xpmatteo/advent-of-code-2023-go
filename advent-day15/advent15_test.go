@@ -1,7 +1,6 @@
 package advent_day15
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"slices"
@@ -53,54 +52,54 @@ func Test_parseCommands(t *testing.T) {
 func Test_applyCommands(t *testing.T) {
 	tests := []struct {
 		commands string
-		want     boxes
+		want     Boxes
 	}{
-		{"rn-", boxes{
+		{"rn-", Boxes{
 			nil, nil, nil, nil,
 		}},
-		{"rn=3", boxes{
+		{"rn=3", Boxes{
 			{{"rn", 3}},
 			nil,
 			nil,
 			nil,
 		}},
-		{"rn=3,cm=4", boxes{
+		{"rn=3,cm=4", Boxes{
 			{{"rn", 3}, {"cm", 4}},
 			nil,
 			nil,
 			nil,
 		}},
-		{"rn=3,rn=4", boxes{
+		{"rn=3,rn=4", Boxes{
 			{{"rn", 4}},
 			nil,
 			nil,
 			nil,
 		}},
-		{"rn=3,rn-", boxes{
+		{"rn=3,rn-", Boxes{
 			{},
 			nil,
 			nil,
 			nil,
 		}},
-		{"rn=1,cm-,qp=3", boxes{
+		{"rn=1,cm-,qp=3", Boxes{
 			{{"rn", 1}},
 			{{"qp", 3}},
 			nil,
 			nil,
 		}},
-		{"rn=1,cm-,qp=3,cm=2", boxes{
+		{"rn=1,cm-,qp=3,cm=2", Boxes{
 			{{"rn", 1}, {"cm", 2}},
 			{{"qp", 3}},
 			nil,
 			nil,
 		}},
-		{"rn=1,cm-,qp=3,cm=2,qp-,pc=4", boxes{
+		{"rn=1,cm-,qp=3,cm=2,qp-,pc=4", Boxes{
 			{{"rn", 1}, {"cm", 2}},
 			{},
 			nil,
 			{{"pc", 4}},
 		}},
-		{sampleCommands, boxes{
+		{sampleCommands, Boxes{
 			{{"rn", 1}, {"cm", 2}},
 			{},
 			nil,
@@ -117,12 +116,12 @@ func Test_applyCommands(t *testing.T) {
 func Test_focusingPower(t *testing.T) {
 	tests := []struct {
 		name  string
-		input boxes
+		input Boxes
 		want  int
 	}{
 		{
-			name: "one box one lens",
-			input: boxes{
+			name: "one Box one lens",
+			input: Boxes{
 				{{"rn", 4}},
 				nil,
 				nil,
@@ -131,16 +130,16 @@ func Test_focusingPower(t *testing.T) {
 			want: 4,
 		},
 		{
-			name: "one box two lens",
-			input: boxes{
+			name: "one Box two lens",
+			input: Boxes{
 				{{"", 4}, {"", 5}},
 				nil,
 			},
 			want: 4 + 2*5,
 		},
 		{
-			name: "two boxes",
-			input: boxes{
+			name: "two Boxes",
+			input: Boxes{
 				{{"", 4}, {"", 5}},
 				{{"", 7}},
 			},
@@ -164,7 +163,7 @@ func Test_focusingPower(t *testing.T) {
 	}
 }
 
-func focusingPower(input boxes) int {
+func focusingPower(input Boxes) int {
 	sum := 0
 	for iBox, box := range input {
 		for iLens, lens := range box {
@@ -174,23 +173,23 @@ func focusingPower(input boxes) int {
 	return sum
 }
 
-func execute(commands string, size int) boxes {
-	result := make([]box, size)
+func execute(commands string, size int) Boxes {
+	result := make([]Box, size)
 	for _, token := range strings.Split(commands, ",") {
 		cmd := parseCommand(token)
 		box := result[cmd.index]
-		boxIndex := slices.IndexFunc(box, func(elt Lens) bool {
+		iLens := slices.IndexFunc(box, func(elt Lens) bool {
 			return elt.label == cmd.label
 		})
 		if cmd.kind == add {
-			if boxIndex >= 0 {
-				box[boxIndex].focalLength = cmd.focalLength
+			if iLens >= 0 {
+				box[iLens].focalLength = cmd.focalLength
 			} else {
-				result[cmd.index] = append(result[cmd.index], Lens{cmd.label, cmd.focalLength})
+				result[cmd.index] = append(box, Lens{cmd.label, cmd.focalLength})
 			}
 		} else {
-			if boxIndex >= 0 {
-				result[cmd.index] = append(box[:boxIndex], box[boxIndex+1:]...)
+			if iLens >= 0 {
+				result[cmd.index] = append(box[:iLens], box[iLens+1:]...)
 			}
 		}
 	}
@@ -233,28 +232,14 @@ type Lens struct {
 	label       string
 	focalLength int
 }
-type box []Lens
-type boxes []box
-
-func (k CommandKind) String() string {
-	if k == add {
-		return "add"
-	} else if k == remove {
-		return "remove"
-	} else {
-		panic(fmt.Errorf("invalid CommandKind %d", k))
-	}
-}
+type Box []Lens
+type Boxes []Box
 
 type Command struct {
 	label       string
 	index       int
 	kind        CommandKind
 	focalLength int
-}
-
-func (c *Command) String() string {
-	return fmt.Sprintf("%s %d %s %d", c.label, c.index, c.kind, c.focalLength)
 }
 
 func readFile(fileName string) string {
