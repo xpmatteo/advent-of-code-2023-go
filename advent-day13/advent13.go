@@ -1,6 +1,9 @@
 package advent_day13
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 type Pattern []Line
 type Line string
@@ -10,10 +13,24 @@ func (c Column) score() int {
 	return Line(c).score()
 }
 
+func (p Pattern) String() string {
+	result := ""
+	for _, line := range p {
+		result += string(line) + "\n"
+	}
+	return result
+}
+
 func NewPattern(p string) Pattern {
-	split := strings.Split(p, "\n")
+	split := strings.Split(strings.TrimSpace(p), "\n")
+	if len(split) == 0 {
+		panic("no lines in pattern")
+	}
 	pattern := make(Pattern, len(split))
 	for i, s := range split {
+		if len(s) == 0 {
+			panic("empty line in pattern: " + strconv.Itoa(i))
+		}
 		pattern[i] = Line(s)
 	}
 	return pattern
@@ -25,6 +42,7 @@ func (pattern Pattern) lines() []Line {
 
 func (pattern Pattern) columns() []Column {
 	columns := make([]Column, len(pattern[0]))
+
 	for i := 0; i < len(pattern[0]); i++ {
 		column := ""
 		for _, line := range pattern {
@@ -45,11 +63,11 @@ func (line Line) isPalyndromic() bool {
 }
 
 func score(pattern Pattern) int {
+	if len(pattern) == 0 {
+		return 0
+	}
 	v := verticalScore(pattern)
 	h := horizontalScore(pattern)
-	if v == 0 && h == 0 {
-		panic("both hor and vert are 0")
-	}
 	return v + h*100
 }
 
