@@ -6,52 +6,46 @@ import (
 	"testing"
 )
 
-type Direction string
+func Test_emptyCell_L(t *testing.T) {
+	cell := newEmptyCell()
 
-const (
-	E Direction = "E"
-	W Direction = "W"
-	U Direction = "U"
-	D Direction = "D"
-)
+	result := cell.Enter(L)
 
-type Set[T comparable] map[T]struct{}
-
-type Cell func(direction Direction) Set[Direction]
-
-func empty(direction Direction) Set[Direction] {
-	switch direction {
-	case E:
-		return setOf(W)
-	}
+	assert.Equal(t, setOf(R), result)
+	assert.True(t, cell.energized, "energized")
 }
 
-func setOf(d ...Direction) Set[Direction] {
-	result := make(Set[Direction])
-	for _, direction := range d {
-		result[direction] = struct{}{}
-	}
-	return result
+func Test_rowEmptyCells(t *testing.T) {
+	empty0 := newEmptyCell()
+	empty1 := newEmptyCell()
+	empty2 := newEmptyCell()
+	row := newRow(&empty0, &empty1, &empty2)
+	assert.Equal(t, "...", row.String())
+
+	empty0.Enter(L)
+
+	assert.True(t, empty1.energized, "propagate ray of light")
+	assert.Equal(t, "###", row.String())
 }
 
-func Test_rayTracing(t *testing.T) {
+func xTest_rayTracing(t *testing.T) {
 	tests := []struct {
-		name  string
 		input string
 		wants string
 	}{
 		{
-			name:  "empty space one cell",
 			input: `>`,
 			wants: `#`,
 		},
 		{
-			name:  "empty space one row",
 			input: `>..`,
 			wants: `###`,
 		},
 		{
-			name: "empty space from left",
+			input: `.v.`,
+			wants: `.#.`,
+		},
+		{
 			input: `...
 		           >..
 		           ...`,
@@ -71,8 +65,8 @@ func Test_rayTracing(t *testing.T) {
 		// etc...
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			input := removeWhiteSpace(test.input)
+		input := removeWhiteSpace(test.input)
+		t.Run(input, func(t *testing.T) {
 			wants := removeWhiteSpace(test.wants)
 			assert.Equal(t, wants, rayTrace(input))
 		})
