@@ -163,9 +163,9 @@ func Test_focusingPower(t *testing.T) {
 	}
 }
 
-func focusingPower(input Boxes) int {
+func focusingPower(boxes Boxes) int {
 	sum := 0
-	for iBox, box := range input {
+	for iBox, box := range boxes {
 		for iLens, lens := range box {
 			sum += (iBox + 1) * (iLens + 1) * lens.focalLength
 		}
@@ -197,30 +197,27 @@ func execute(commands string, size int) Boxes {
 }
 
 func parseCommand(input string) *Command {
+	result := Command{}
 	if input[len(input)-1] == '-' {
-		label := strings.Split(input, "-")[0]
-		return &Command{
-			label:       label,
-			index:       hash1(label),
-			kind:        remove,
-			focalLength: 0,
-		}
+		result.label = strings.Split(input, "-")[0]
+		result.kind = remove
 	} else if strings.Contains(input, "=") {
 		split := strings.Split(input, "=")
-		label, focalString := split[0], split[1]
-		focal, err := strconv.Atoi(focalString)
-		if err != nil {
-			panic(err)
-		}
-		return &Command{
-			label:       label,
-			index:       hash1(label),
-			kind:        add,
-			focalLength: focal,
-		}
+		result.label = split[0]
+		result.focalLength = atoi(split[1])
+		result.kind = add
 	} else {
 		panic("bad input commands: " + input)
 	}
+	return &result
+}
+
+func atoi(s string) int {
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	return n
 }
 
 type CommandKind int
