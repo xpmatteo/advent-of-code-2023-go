@@ -4,11 +4,16 @@ type Row struct {
 	cells []*Cell
 }
 
-func newRow(cells ...*Cell) Row {
+func newRow1(s string) *Row {
+	cells := []*Cell{}
+	for _, _ = range s {
+		cells = append(cells, newEmptyCell())
+	}
 	for i := 0; i < len(cells)-1; i++ {
 		cells[i].neighbors[R] = cells[i+1]
+		cells[i+1].neighbors[L] = cells[i]
 	}
-	return Row{cells: cells}
+	return &Row{cells: cells}
 }
 
 func (r *Row) String() string {

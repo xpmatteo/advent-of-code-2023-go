@@ -2,6 +2,7 @@ package advent_day16
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
 )
@@ -16,42 +17,58 @@ func Test_emptyCell_L(t *testing.T) {
 }
 
 func Test_rowEmptyCells(t *testing.T) {
-	empty0 := newEmptyCell()
-	empty1 := newEmptyCell()
-	empty2 := newEmptyCell()
-	row := newRow(&empty0, &empty1, &empty2)
+	row := newRow1("...")
 	assert.Equal(t, "...", row.String())
 
-	empty0.Enter(L)
+	row.cells[0].Enter(L)
 
-	assert.True(t, empty1.energized, "propagate ray of light")
 	assert.Equal(t, "###", row.String())
 }
 
-func xTest_rayTracing(t *testing.T) {
+func Test_rowEmptyCells_left(t *testing.T) {
+	row := newRow1("...")
+	assert.Equal(t, "...", row.String())
+
+	row.cells[2].Enter(R)
+
+	assert.Equal(t, "###", row.String())
+}
+
+func Test_rayTracing(t *testing.T) {
 	tests := []struct {
-		input string
-		wants string
+		name     string
+		input    string
+		wants    string
+		row, col int
+		enterDir Direction
 	}{
 		{
-			input: `>`,
-			wants: `#`,
+			enterDir: L,
+			input:    `...`,
+			wants:    `###`,
 		},
 		{
-			input: `>..`,
-			wants: `###`,
+			enterDir: R,
+			col:      2,
+			input:    `...`,
+			wants:    `###`,
 		},
 		{
-			input: `.v.`,
-			wants: `.#.`,
+			enterDir: T,
+			col:      1,
+			input:    `.v.`,
+			wants:    `.#.`,
 		},
 		{
+			name:     "empty space, 3 rows",
+			enterDir: L,
+			row:      1,
 			input: `...
-		           >..
-		           ...`,
+		            ...
+		            ...`,
 			wants: `...
-		           ###
-		           ...`,
+		            ###
+		            ...`,
 		},
 		//{
 		//	name: "empty space from top",
@@ -66,9 +83,16 @@ func xTest_rayTracing(t *testing.T) {
 	}
 	for _, test := range tests {
 		input := removeWhiteSpace(test.input)
-		t.Run(input, func(t *testing.T) {
+		name := input
+		if test.name != "" {
+			name = test.name
+		}
+		require.Equal(t, 1, len(test.enterDir), "no enterDir set")
+		t.Run(name, func(t *testing.T) {
 			wants := removeWhiteSpace(test.wants)
-			assert.Equal(t, wants, rayTrace(input))
+			row := newRow1(input)
+			row.cells[test.col].Enter(test.enterDir)
+			assert.Equal(t, wants, row.String())
 		})
 	}
 }

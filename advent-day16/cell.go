@@ -6,6 +6,12 @@ func (d Direction) Opposite() Direction {
 	switch d {
 	case L:
 		return R
+	case R:
+		return L
+	case T:
+		return B
+	case B:
+		return T
 	default:
 		panic("Bad direction " + d)
 	}
@@ -21,17 +27,13 @@ const (
 type CellFunc func(direction Direction) DirSet
 
 type Cell struct {
-	f              CellFunc
-	energized      bool
-	neighbors      map[Direction]*Cell
-	rightNeighbor  *Cell
-	leftNeighbor   *Cell
-	topNeighbor    *Cell
-	bottomNeighbor *Cell
+	f         CellFunc
+	energized bool
+	neighbors map[Direction]*Cell
 }
 
-func newEmptyCell() Cell {
-	return Cell{
+func newEmptyCell() *Cell {
+	return &Cell{
 		f:         nil,
 		energized: false,
 		neighbors: make(map[Direction]*Cell),
