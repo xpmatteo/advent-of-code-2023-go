@@ -24,7 +24,7 @@ const (
 	B Direction = "B"
 )
 
-type CellFunc func(direction Direction) DirSet
+type CellFunc func(direction Direction) Direction
 
 type Cell struct {
 	f         CellFunc
@@ -32,18 +32,41 @@ type Cell struct {
 	neighbors map[Direction]*Cell
 }
 
+func (c *Cell) Enter(enterDir Direction) DirSet {
+	c.energized = true
+	exitDir := c.f(enterDir)
+	if n, ok := c.neighbors[exitDir]; ok {
+		n.Enter(exitDir.Opposite())
+	}
+	return setOf(enterDir.Opposite())
+}
+
 func newEmptyCell() *Cell {
 	return &Cell{
-		f:         nil,
+		f:         func(dir Direction) Direction { return dir.Opposite() },
 		energized: false,
 		neighbors: make(map[Direction]*Cell),
 	}
 }
 
-func (c *Cell) Enter(d Direction) DirSet {
-	c.energized = true
-	if n, ok := c.neighbors[d.Opposite()]; ok {
-		n.Enter(d)
+func newBackslashMirror() *Cell {
+	f := func(dir Direction) Direction {
+		switch dir {
+		case L:
+			return B
+		case B:
+			return L
+		case R:
+			return T
+		case T:
+			return R
+		default:
+			panic("bad direction " + dir)
+		}
 	}
-	return setOf(d.Opposite())
+	return &Cell{
+		f:         f,
+		energized: false,
+		neighbors: make(map[Direction]*Cell),
+	}
 }

@@ -1,6 +1,9 @@
 package advent_day16
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type Grid struct {
 	rows []*Row
@@ -42,8 +45,16 @@ func (g *Grid) String() string {
 
 func newRow1(s string) *Row {
 	cells := []*Cell{}
-	for _, _ = range s {
-		cells = append(cells, newEmptyCell())
+	for _, c := range s {
+		var cell *Cell
+		if c == '.' {
+			cell = newEmptyCell()
+		} else if c == '\\' {
+			cell = newBackslashMirror()
+		} else {
+			panic(fmt.Sprintf("bad character '%c'", c))
+		}
+		cells = append(cells, cell)
 	}
 	for i := 0; i < len(cells)-1; i++ {
 		cells[i].neighbors[R] = cells[i+1]

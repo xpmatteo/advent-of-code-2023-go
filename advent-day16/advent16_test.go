@@ -66,7 +66,42 @@ func Test_rayTracing(t *testing.T) {
 		            .#.
 		            .#.`,
 		},
-		// etc...
+		{
+			name:     "diag \\ mirror from left",
+			row:      1,
+			col:      0,
+			enterDir: L,
+			input: `...
+		            .\.
+		            ...`,
+			wants: `...
+		            ##.
+		            .#.`,
+		},
+		{
+			name:     "diag \\ mirror from right",
+			row:      1,
+			col:      2,
+			enterDir: R,
+			input: `...
+		            .\.
+		            ...`,
+			wants: `.#.
+		            .##
+		            ...`,
+		},
+		{
+			name:     "diag \\ mirror from top",
+			row:      0,
+			col:      1,
+			enterDir: T,
+			input: `...
+		            .\.
+		            ...`,
+			wants: `.#.
+		            .##
+		            ...`,
+		},
 	}
 	for _, test := range tests {
 		input := removeWhiteSpace(test.input)
