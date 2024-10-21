@@ -7,33 +7,6 @@ import (
 	"testing"
 )
 
-func Test_emptyCell_L(t *testing.T) {
-	cell := newEmptyCell()
-
-	result := cell.Enter(L)
-
-	assert.Equal(t, setOf(R), result)
-	assert.True(t, cell.energized, "energized")
-}
-
-func Test_rowEmptyCells(t *testing.T) {
-	row := newRow1("...")
-	assert.Equal(t, "...", row.String())
-
-	row.cells[0].Enter(L)
-
-	assert.Equal(t, "###", row.String())
-}
-
-func Test_rowEmptyCells_left(t *testing.T) {
-	row := newRow1("...")
-	assert.Equal(t, "...", row.String())
-
-	row.cells[2].Enter(R)
-
-	assert.Equal(t, "###", row.String())
-}
-
 func Test_rayTracing(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -56,7 +29,7 @@ func Test_rayTracing(t *testing.T) {
 		{
 			enterDir: T,
 			col:      1,
-			input:    `.v.`,
+			input:    `...`,
 			wants:    `.#.`,
 		},
 		{
@@ -70,15 +43,29 @@ func Test_rayTracing(t *testing.T) {
 		            ###
 		            ...`,
 		},
-		//{
-		//	name: "empty space from top",
-		//	input: `.v.
-		//            ...
-		//            ...`,
-		//	wants: `.#.
-		//            .#.
-		//            .#.`,
-		//},
+		{
+			name:     "empty space from top",
+			col:      1,
+			enterDir: T,
+			input: `...
+		            ...
+		            ...`,
+			wants: `.#.
+		            .#.
+		            .#.`,
+		},
+		{
+			name:     "empty space from top",
+			row:      2,
+			col:      1,
+			enterDir: B,
+			input: `...
+		            ...
+		            ...`,
+			wants: `.#.
+		            .#.
+		            .#.`,
+		},
 		// etc...
 	}
 	for _, test := range tests {
@@ -90,9 +77,9 @@ func Test_rayTracing(t *testing.T) {
 		require.Equal(t, 1, len(test.enterDir), "no enterDir set")
 		t.Run(name, func(t *testing.T) {
 			wants := removeWhiteSpace(test.wants)
-			row := newRow1(input)
-			row.cells[test.col].Enter(test.enterDir)
-			assert.Equal(t, wants, row.String())
+			grid := newGrid(input)
+			grid.Enter(test.row, test.col, test.enterDir)
+			assert.Equal(t, wants, grid.String())
 		})
 	}
 }
