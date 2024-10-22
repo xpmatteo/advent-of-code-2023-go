@@ -44,6 +44,18 @@ func (g *Grid) String() string {
 	return result[:len(result)-1]
 }
 
+func (g *Grid) CountIlluminated() int {
+	count := 0
+	for _, row := range g.rows {
+		for _, cell := range row.cells {
+			if cell.isEnergized() {
+				count++
+			}
+		}
+	}
+	return count
+}
+
 func newRow(s string) *Row {
 	cells := []*Cell{}
 	for _, c := range s {
@@ -59,7 +71,7 @@ func newRow(s string) *Row {
 func (r *Row) String() string {
 	result := ""
 	for _, c := range r.cells {
-		if c.energized {
+		if c.isEnergized() {
 			result += "#"
 		} else {
 			result += "."

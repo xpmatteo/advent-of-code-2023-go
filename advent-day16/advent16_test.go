@@ -37,8 +37,8 @@ func Test_rayTracing(t *testing.T) {
 			enterDir: L,
 			row:      1,
 			input: `...
-		            ...
-		            ...`,
+		           ...
+		           ...`,
 			wants: `...
 		            ###
 		            ...`,
@@ -60,11 +60,11 @@ func Test_rayTracing(t *testing.T) {
 			col:      1,
 			enterDir: B,
 			input: `...
-		            ...
-		            ...`,
+		           ...
+		           ...`,
 			wants: `.#.
-		            .#.
-		            .#.`,
+		           .#.
+		           .#.`,
 		},
 		{
 			name:     "diag \\ mirror from left",
@@ -72,11 +72,11 @@ func Test_rayTracing(t *testing.T) {
 			col:      0,
 			enterDir: L,
 			input: `...
-		            .\.
-		            ...`,
+		           .\.
+		           ...`,
 			wants: `...
-		            ##.
-		            .#.`,
+		           ##.
+		           .#.`,
 		},
 		{
 			name:     "diag \\ mirror from right",
@@ -84,11 +84,11 @@ func Test_rayTracing(t *testing.T) {
 			col:      2,
 			enterDir: R,
 			input: `...
-		            .\.
-		            ...`,
+		           .\.
+		           ...`,
 			wants: `.#.
-		            .##
-		            ...`,
+		           .##
+		           ...`,
 		},
 		{
 			name:     "diag \\ mirror from top",
@@ -96,11 +96,23 @@ func Test_rayTracing(t *testing.T) {
 			col:      1,
 			enterDir: T,
 			input: `...
-		            .\.
-		            ...`,
+		           .\.
+		           ...`,
 			wants: `.#.
-		            .##
-		            ...`,
+		           .##
+		           ...`,
+		},
+		{
+			name:     "diag / mirror from left",
+			row:      1,
+			col:      0,
+			enterDir: L,
+			input: `...
+		           ./.
+		           ...`,
+			wants: `.#.
+		           ##.
+		           ...`,
 		},
 		{
 			name:     "vert mirror from left",
@@ -108,11 +120,11 @@ func Test_rayTracing(t *testing.T) {
 			col:      0,
 			enterDir: L,
 			input: `...
-		            .|.
-		            ...`,
+		           .|.
+		           ...`,
 			wants: `.#.
-		            ##.
-		            .#.`,
+		           ##.
+		           .#.`,
 		},
 		{
 			name:     "vert mirror from right",
@@ -120,11 +132,11 @@ func Test_rayTracing(t *testing.T) {
 			col:      2,
 			enterDir: R,
 			input: `...
-		            .|.
-		            ...`,
+		           .|.
+		           ...`,
 			wants: `.#.
-		            .##
-		            .#.`,
+		           .##
+		           .#.`,
 		},
 		{
 			name:     "vert mirror from top",
@@ -132,11 +144,11 @@ func Test_rayTracing(t *testing.T) {
 			col:      1,
 			enterDir: T,
 			input: `...
-		            .|.
-		            ...`,
+		           .|.
+		           ...`,
 			wants: `.#.
-		            .#.
-		            .#.`,
+		           .#.
+		           .#.`,
 		},
 		{
 			name:     "hor mirror from top",
@@ -150,15 +162,63 @@ func Test_rayTracing(t *testing.T) {
 		            ###
 		            ...`,
 		},
+		{
+			name:     "hor mirror from bottom",
+			row:      2,
+			col:      1,
+			enterDir: B,
+			input: `...
+		            .-.
+		            ...`,
+			wants: `...
+		            ###
+		            .#.`,
+		},
+		{
+			name:     "loops are ok",
+			row:      4,
+			col:      3,
+			enterDir: B,
+			input: `.......
+		            ./...\.
+					.......
+					.\.-./.
+		            .......`,
+			wants: `.......
+		            .#####.
+					.#...#.
+		            .#####.
+		            ...#...`,
+		},
+		{
+			name:     "sample",
+			enterDir: L,
+			input: `.|...\....
+					|.-.\.....
+					.....|-...
+					........|.
+					..........
+					.........\
+					..../.\\..
+					.-.-/..|..
+					.|....-|.\
+					..//.|....`,
+			wants: `######....
+					.#...#....
+					.#...#####
+					.#...##...
+					.#...##...
+					.#...##...
+					.#..####..
+					########..
+					.#######..
+					.#...#.#..`,
+		},
 	}
 	for _, test := range tests {
 		input := removeWhiteSpace(test.input)
-		name := input
-		if test.name != "" {
-			name = test.name
-		}
 		require.Equal(t, 1, len(test.enterDir), "no enterDir set")
-		t.Run(name, func(t *testing.T) {
+		t.Run(test.name, func(t *testing.T) {
 			wants := removeWhiteSpace(test.wants)
 			grid := newGrid(input)
 			grid.Enter(test.row, test.col, test.enterDir)
@@ -173,22 +233,11 @@ func removeWhiteSpace(s string) string {
 	return s
 }
 
-func rayTrace(input string) string {
-	var result []string
-	for _, row := range strings.Split(input, "\n") {
-		if row[0] == '>' {
-			result = append(result, illuminate(row))
-		} else {
-			result = append(result, row)
-		}
-	}
-	return strings.Join(result, "\n")
-}
-
-func illuminate(row string) string {
-	result := ""
-	for _, _ = range row {
-		result += "#"
-	}
-	return result
+func Test_countIlluminated(t *testing.T) {
+	input := `...
+			  .-.
+		      ...`
+	grid := newGrid(removeWhiteSpace(input))
+	grid.Enter(0, 1, T)
+	assert.Equal(t, 4, grid.CountIlluminated())
 }
