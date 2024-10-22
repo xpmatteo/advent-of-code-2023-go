@@ -1,5 +1,7 @@
 package advent_day16
 
+import "fmt"
+
 type Direction string
 
 func (d Direction) Opposite() Direction {
@@ -24,12 +26,72 @@ const (
 	B Direction = "B"
 )
 
-type CellFunc func(direction Direction) DirSet
-
 type Cell struct {
 	rayTrace  CellFunc
 	energized bool
 	neighbors map[Direction]*Cell
+}
+
+type CellFunc func(direction Direction) DirSet
+
+var cellFuncs = map[int]CellFunc{
+	'.':  emptySpaceFunc,
+	'\\': backslashMirror,
+	'|':  vertMirror,
+	'-':  horMirror,
+}
+
+func emptySpaceFunc(direction Direction) DirSet {
+	return setOf(direction.Opposite())
+}
+
+func backslashMirror(dir Direction) DirSet {
+	switch dir {
+	case L:
+		return setOf(B)
+	case B:
+		return setOf(L)
+	case R:
+		return setOf(T)
+	case T:
+		return setOf(R)
+	default:
+		panic("bad direction " + dir)
+	}
+}
+
+func vertMirror(dir Direction) DirSet {
+	switch dir {
+	case L:
+		return setOf(T, B)
+	case R:
+		return setOf(T, B)
+	default:
+		return setOf(dir.Opposite())
+	}
+}
+
+func horMirror(dir Direction) DirSet {
+	switch dir {
+	case T:
+		return setOf(L, R)
+	case B:
+		return setOf(L, R)
+	default:
+		return setOf(dir.Opposite())
+	}
+}
+
+func newCell(c int) *Cell {
+	cellFunc, ok := cellFuncs[c]
+	if !ok {
+		panic(fmt.Sprintf("Bad character '%c'", c))
+	}
+	return &Cell{
+		rayTrace:  cellFunc,
+		energized: false,
+		neighbors: make(map[Direction]*Cell),
+	}
 }
 
 func (c *Cell) Enter(enterDir Direction) DirSet {

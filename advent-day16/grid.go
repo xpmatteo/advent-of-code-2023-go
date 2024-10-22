@@ -1,7 +1,6 @@
 package advent_day16
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -48,19 +47,7 @@ func (g *Grid) String() string {
 func newRow(s string) *Row {
 	cells := []*Cell{}
 	for _, c := range s {
-		var cell *Cell
-		if c == '.' {
-			cell = newEmptyCell()
-		} else if c == '\\' {
-			cell = newBackslashMirror()
-		} else if c == '|' {
-			cell = newVertMirror()
-		} else if c == '-' {
-			cell = newHorMirror()
-		} else {
-			panic(fmt.Sprintf("bad character '%c'", c))
-		}
-		cells = append(cells, cell)
+		cells = append(cells, newCell(int(c)))
 	}
 	for i := 0; i < len(cells)-1; i++ {
 		cells[i].neighbors[R] = cells[i+1]
