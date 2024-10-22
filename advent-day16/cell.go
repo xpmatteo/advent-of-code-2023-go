@@ -24,48 +24,86 @@ const (
 	B Direction = "B"
 )
 
-type CellFunc func(direction Direction) Direction
+type CellFunc func(direction Direction) DirSet
 
 type Cell struct {
-	f         CellFunc
+	rayTrace  CellFunc
 	energized bool
 	neighbors map[Direction]*Cell
 }
 
 func (c *Cell) Enter(enterDir Direction) DirSet {
 	c.energized = true
-	exitDir := c.f(enterDir)
-	if n, ok := c.neighbors[exitDir]; ok {
-		n.Enter(exitDir.Opposite())
+	exitDirs := c.rayTrace(enterDir)
+	for exitDir, _ := range exitDirs {
+		if n, ok := c.neighbors[exitDir]; ok {
+			n.Enter(exitDir.Opposite())
+		}
 	}
 	return setOf(enterDir.Opposite())
 }
 
 func newEmptyCell() *Cell {
 	return &Cell{
-		f:         func(dir Direction) Direction { return dir.Opposite() },
+		rayTrace:  func(dir Direction) DirSet { return setOf(dir.Opposite()) },
 		energized: false,
 		neighbors: make(map[Direction]*Cell),
 	}
 }
 
 func newBackslashMirror() *Cell {
-	f := func(dir Direction) Direction {
+	f := func(dir Direction) DirSet {
 		switch dir {
 		case L:
-			return B
+			return setOf(B)
 		case B:
-			return L
+			return setOf(L)
 		case R:
-			return T
+			return setOf(T)
 		case T:
-			return R
+			return setOf(R)
 		default:
 			panic("bad direction " + dir)
 		}
 	}
 	return &Cell{
-		f:         f,
+		rayTrace:  f,
+		energized: false,
+		neighbors: make(map[Direction]*Cell),
+	}
+}
+
+func newVertMirror() *Cell {
+	f := func(dir Direction) DirSet {
+		switch dir {
+		case L:
+			return setOf(T, B)
+		case R:
+			return setOf(T, B)
+		default:
+			return setOf(dir.Opposite())
+		}
+	}
+	return &Cell{
+		rayTrace:  f,
+		energized: false,
+		neighbors: make(map[Direction]*Cell),
+	}
+}
+
+func newHorMirror() *Cell {
+	f := func(dir Direction) DirSet {
+		switch dir {
+		case T:
+			return setOf(L, R)
+		case B:
+			return setOf(L, R)
+		default:
+			return setOf(dir.Opposite())
+		}
+	}
+	return &Cell{
+		rayTrace:  f,
 		energized: false,
 		neighbors: make(map[Direction]*Cell),
 	}

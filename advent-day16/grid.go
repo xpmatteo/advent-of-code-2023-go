@@ -15,9 +15,11 @@ type Row struct {
 
 func newGrid(s string) *Grid {
 	var rows = []*Row{}
+	// create rows
 	for _, s2 := range strings.Split(s, "\n") {
-		rows = append(rows, newRow1(s2))
+		rows = append(rows, newRow(s2))
 	}
+	// connect cells
 	for iRow, row := range rows {
 		if iRow > 0 {
 			rowAbove := rows[iRow-1]
@@ -43,7 +45,7 @@ func (g *Grid) String() string {
 	return result[:len(result)-1]
 }
 
-func newRow1(s string) *Row {
+func newRow(s string) *Row {
 	cells := []*Cell{}
 	for _, c := range s {
 		var cell *Cell
@@ -51,6 +53,10 @@ func newRow1(s string) *Row {
 			cell = newEmptyCell()
 		} else if c == '\\' {
 			cell = newBackslashMirror()
+		} else if c == '|' {
+			cell = newVertMirror()
+		} else if c == '-' {
+			cell = newHorMirror()
 		} else {
 			panic(fmt.Sprintf("bad character '%c'", c))
 		}
