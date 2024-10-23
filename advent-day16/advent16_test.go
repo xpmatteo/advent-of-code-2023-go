@@ -3,9 +3,21 @@ package advent_day16
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"os"
 	"strings"
 	"testing"
 )
+
+const sample = `.|...\....
+				|.-.\.....
+				.....|-...
+				........|.
+				..........
+				.........\
+				..../.\\..
+				.-.-/..|..
+				.|....-|.\
+				..//.|....`
 
 func Test_rayTracing(t *testing.T) {
 	tests := []struct {
@@ -193,19 +205,11 @@ func Test_rayTracing(t *testing.T) {
 		{
 			name:     "sample",
 			enterDir: L,
-			input: `.|...\....
-					|.-.\.....
-					.....|-...
-					........|.
-					..........
-					.........\
-					..../.\\..
-					.-.-/..|..
-					.|....-|.\
-					..//.|....`,
+			input:    sample,
+			//      1234567890
 			wants: `######....
 					.#...#....
-					.#...#####
+					.#...##### 
 					.#...##...
 					.#...##...
 					.#...##...
@@ -233,11 +237,22 @@ func removeWhiteSpace(s string) string {
 	return s
 }
 
-func Test_countIlluminated(t *testing.T) {
-	input := `...
-			  .-.
-		      ...`
-	grid := newGrid(removeWhiteSpace(input))
+func Test_countIlluminated_part1(t *testing.T) {
+	//grid := newGrid(readFile("input.txt"))
+	assert.Equal(t, 46, countEnergized(removeWhiteSpace(sample)))
+}
+
+func countEnergized(input string) int {
+	grid := newGrid(input)
 	grid.Enter(0, 1, T)
-	assert.Equal(t, 4, grid.CountIlluminated())
+	illuminated := grid.CountIlluminated()
+	return illuminated
+}
+
+func readFile(fileName string) string {
+	bytes, err := os.ReadFile(fileName)
+	if err != nil {
+		panic(err)
+	}
+	return string(bytes)
 }

@@ -52,6 +52,7 @@ func (g *Grid) CountIlluminated() int {
 				count++
 			}
 		}
+		println("count", count)
 	}
 	return count
 }
